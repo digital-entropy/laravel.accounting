@@ -1,0 +1,48 @@
+{
+    "name": "digitalentropy/laravel-accounting",
+    "description": "Implementation for Double-Entry Accounting for laravel.",
+    "keywords": [
+        "laravel",
+        "accounting"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Digital Entropy",
+            "email": "info@digitalentropy.co.id",
+            "homepage": "https://digitalentropy.co.id",
+            "role": "Company"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "ext-json": "*",
+        "illuminate/support": "^7.0|^8.0"
+    },
+    "require-dev": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "DigitalEntropy\\Accounting\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DigitalEntropy\\Accounting\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DigitalEntropy\\Accounting\\AccountingServiceProvider"
+            ],
+            "aliases": {
+                
+            }
+        }
+    }
+}
