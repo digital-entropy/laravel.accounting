@@ -14,22 +14,14 @@ class CreateJournalsTable extends Migration
      */
     public function up()
     {
-        Schema::create('account_types', function (Blueprint $table) {
-            $table->string('code', 2);
-            $table->string('name', 50);
-            $table->timestamps();
-
-            $table->primary('code');
-        });
-
         Schema::create('accounts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->nullableMorphs('tenant');
-            $table->string('account_type_code', 2);
-            $table->string('group', 4);
+            $table->string('code', 4);
+            $table->string('description', 20)->nullable();
+            $table->string('type', 20);
+            $table->boolean('is_cash')->default(false);
             $table->timestamps();
-
-            $table->foreign('account_type_code')->references('code')->on('account_types');
         });
 
         Schema::create('journals', function (Blueprint $table) {
@@ -65,6 +57,5 @@ class CreateJournalsTable extends Migration
         Schema::drop('journals_entries');
         Schema::drop('journals');
         Schema::drop('accounts');
-        Schema::drop('account_types');
     }
 }

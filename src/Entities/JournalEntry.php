@@ -6,6 +6,12 @@ namespace DigitalEntropy\Accounting\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class JournalEntry
+ * @package DigitalEntropy\Accounting\Entities
+ * @property int amount
+ * @property string type
+ */
 class JournalEntry extends Model
 {
     protected $table = 'journals_entries';
@@ -13,6 +19,7 @@ class JournalEntry extends Model
     protected $fillable = [
         'type',
         'memo',
+        'amount',
         'ref'
     ];
 

@@ -4,7 +4,7 @@
 namespace DigitalEntropy\Accounting\Exceptions;
 
 
-interface InvalidAccountingException
+abstract class InvalidAccountingException extends \Exception implements Exception
 {
 
 }

@@ -14,4 +14,14 @@ use Illuminate\Database\Eloquent\Model;
 class Account extends Model
 {
 
+    const TYPE_ASSET = "ASSET";
+    const TYPE_LIABILITY = "LIABILITY";
+    const TYPE_EQUITY = "EQUITY";
+    const TYPE_REVENUE = "REVENUE";
+    const TYPE_EXPENSE = "EXPENSE";
+    const TYPE_OTHER = "OTHER";
+
+    const TYPE_CASH = "CASH";
+    const TYPE_NON_CASH = "NON_CASH";
+
 }
