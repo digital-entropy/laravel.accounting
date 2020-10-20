@@ -36,8 +36,8 @@ class CreateJournalsTable extends Migration
 
         Schema::create('journals_entries', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigIncrements('journal_id');
-            $table->bigIncrements('account_id');
+            $table->unsignedBigInteger('journal_id');
+            $table->unsignedBigInteger('account_id');
             $table->unsignedBigInteger('amount')->default(0);
             $table->enum('type', [Journal::TYPE_CREDIT, Journal::TYPE_DEBIT]);
             $table->string('memo', 150)->nullable();

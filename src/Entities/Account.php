@@ -25,6 +25,15 @@ class Account extends Model
     const TYPE_CASH = "CASH";
     const TYPE_NON_CASH = "NON_CASH";
 
+    protected $fillable = [
+        'code',
+        'group_code',
+        'description',
+        'type_code',
+        'type_description',
+        'is_cash'
+    ];
+
     protected $appends = [
         'combined_code'
     ];

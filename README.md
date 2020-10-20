@@ -1,4 +1,7 @@
 # Laravel Accounting
 --
 
-Work in Progress
+Add into **config/app.php**
+```
+'Accounting' => \DigitalEntropy\Accounting\Facade\Accounting::class
+```

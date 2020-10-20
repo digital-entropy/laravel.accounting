@@ -64,14 +64,15 @@ class Accounting
     }
 
     /**
-     * @param $accountTypeCode
-     * @param $code
-     * @param $description
+     * @param string $code
+     * @param string $accountTypeCode
+     * @param string $description
      * @param bool $is_cash
+     * @param string|null $groupCode
      * @return Account
      * @throws InvalidInputException
      */
-    public function createAccount(string $code, string $accountTypeCode, string $description, bool $is_cash = false): Account
+    public function createAccount(string $code, string $accountTypeCode, string $description, bool $is_cash = false, ?string $groupCode = null): Account
     {
         if (!isset($this->config['account_types'][$accountTypeCode])) {
             throw new InvalidInputException("The given account type code ($accountTypeCode) is not available");
@@ -80,6 +81,7 @@ class Accounting
         /** @var Account $account */
         $account = Account::query()->create([
             'code' => $code,
+            'group_code' => $groupCode,
             'description' => $description,
             'type_code' => $accountTypeCode,
             'type_description' => $this->config['account_types'][$accountTypeCode],
