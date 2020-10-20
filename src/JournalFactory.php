@@ -31,7 +31,7 @@ class JournalFactory
      * @param null $ref
      * @return $this
      */
-    public function addEntry(Account $account, $amount, $memo, $type = Journal::TYPE_DEBIT, $ref = null)
+    public function addEntry(Account $account, $amount, $memo = null, $type = Journal::TYPE_DEBIT, $ref = null)
     {
         $this->entries[] = [
             'account_id' => $account->id,
