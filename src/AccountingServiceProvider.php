@@ -10,7 +10,6 @@ class AccountingServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/accounting.php', 'accounting');
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         $this->app->singleton(Accounting::class, function ($app) {
             return new Accounting($app['config']['accounting']);
