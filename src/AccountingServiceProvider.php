@@ -13,6 +13,10 @@ class AccountingServiceProvider extends ServiceProvider
             __DIR__ . '/../config/accounting.php',
             'accounting'
         );
+
+        $this->app->singleton(Accounting::class, function ($app) {
+            return new Accounting($app['config']['accounting']);
+        });
     }
 
     public function boot()

@@ -14,12 +14,14 @@ class CreateJournalsTable extends Migration
      */
     public function up()
     {
+        // Account code = {type_code}-{code}.{group_code}
         Schema::create('accounts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->nullableMorphs('tenant');
             $table->string('code', 4);
+            $table->string('group_code', 4)->nullable();
             $table->string('description', 20)->nullable();
-            $table->string('type', 20);
+            $table->string('type_code', 20);
+            $table->string('type_description', 20);
             $table->boolean('is_cash')->default(false);
             $table->timestamps();
         });

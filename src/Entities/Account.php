@@ -4,6 +4,7 @@
 namespace DigitalEntropy\Accounting\Entities;
 
 
+use DigitalEntropy\Accounting\Accounting;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -23,5 +24,20 @@ class Account extends Model
 
     const TYPE_CASH = "CASH";
     const TYPE_NON_CASH = "NON_CASH";
+
+    protected $appends = [
+        'combined_code'
+    ];
+
+    public function getCombinedCodeAttribute(Accounting $accounting)
+    {
+        return implode('', [
+            $this->attributes['type_code'],
+            $accounting->getTypeSeparator(),
+            $this->attributes['code'],
+            $accounting->getGroupSeparator(),
+            $this->attributes['group_code']
+        ]);
+    }
 
 }

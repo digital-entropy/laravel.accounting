@@ -5,96 +5,135 @@ namespace DigitalEntropy\Accounting;
 
 
 use DigitalEntropy\Accounting\Entities\Account;
-use DigitalEntropy\Accounting\Entities\Journal;
-use DigitalEntropy\Accounting\Entities\JournalEntry;
-use DigitalEntropy\Accounting\Exceptions\NotBalanceJournalEntryException;
-use DigitalEntropy\Accounting\Journal\Entry;
+use DigitalEntropy\Accounting\Exceptions\InvalidInputException;
 use Illuminate\Support\Collection;
 
 class Accounting
 {
+    protected $config;
+    protected $accountTypes;
+    protected $statements;
 
-    /**
-     * @param int $amount
-     * @param string $memo
-     * @param string|null $ref
-     * @param JournalEntry ...$entries
-     *
-     * @throws NotBalanceJournalEntryException
-     */
-    public static function createJournalFromEntries(
-        int $amount,
-        string $memo,
-        ?string $ref = null,
-        JournalEntry ...$entries
-    ): Journal
+    public function __construct($config)
     {
-        $entriesCollection = Collection::make($entries);
-
-        $sumEntries = $entriesCollection->sum(function (JournalEntry $entry) {
-            if ($entry->type == Journal::TYPE_DEBIT) {
-                return $entry->amount;
-            } else {
-                return $entry->amount * -1;
-            }
-        });
-
-        if ($sumEntries !== 0) {
-            throw new NotBalanceJournalEntryException($sumEntries);
-        }
-
-        /** @var Journal $journal */
-        $journal = Journal::query()->create([
-            'amount' => $amount,
-            'memo' => $memo,
-            'ref' => $ref
-        ]);
-
-        $journal->entries()->createMany($journal->toArray());
-
-        return $journal->fresh();
+        $this->config = $config;
+        $this->accountTypes = $config['account_types'];
+        $this->statements = $config['statements'];
     }
 
     /**
-     * Make Journal:
-     * Journal should has 2 entries minimum.
-     *
-     * @param int $amount
-     * @param string $memo
-     * @param Account|null $debitAccount
-     * @param Account|null $creditAccount
-     * @param string|null $ref
-     *
-     * @return Journal
+     * @return array
      */
-    public static function createJournal(
-        int $amount,
-        string $memo,
-        Account $debitAccount,
-        Account $creditAccount,
-        ?string $ref = null
-    ): Journal
+    public function getAccountTypes()
     {
-        /** @var Journal $journal */
-        $journal = Journal::query()->create([
-            'amount' => $amount,
-            'memo' => $memo,
-            'ref' => $ref
-        ])->fresh();
+        $accountTypes = $this->accountTypes;
+        $result = [];
 
-        $journal->entries()->create([
-            'amount' => $amount,
-            'type' => Journal::TYPE_DEBIT,
-            'account_id' => $debitAccount->id
+        foreach ($accountTypes as $code => $name) {
+            $result[] = [
+                'code' => $code,
+                'name' => $name
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param bool $sorted
+     * @param bool $grouped
+     * @return Collection
+     */
+    public function getAccounts(bool $sorted = true, bool $grouped = false)
+    {
+        $accountQuery = Account::query();
+
+        if ($sorted) {
+            $accountQuery = $accountQuery
+                ->orderBy('type_code', 'ASC')
+                ->orderBy('code', 'ASC');
+        }
+
+        $accounts = $accountQuery->get();
+
+        if ($grouped) {
+            $accounts = $accounts->groupBy('tenant_id');
+        }
+
+        return $accounts;
+    }
+
+    /**
+     * @param $accountTypeCode
+     * @param $code
+     * @param $description
+     * @param bool $is_cash
+     * @return Account
+     * @throws InvalidInputException
+     */
+    public function createAccount(string $code, string $accountTypeCode, string $description, bool $is_cash = false): Account
+    {
+        if (!isset($this->config['account_types'][$accountTypeCode])) {
+            throw new InvalidInputException("The given account type code ($accountTypeCode) is not available");
+        }
+
+        /** @var Account $account */
+        $account = Account::query()->create([
+            'code' => $code,
+            'description' => $description,
+            'type_code' => $accountTypeCode,
+            'type_description' => $this->config['account_types'][$accountTypeCode],
+            'is_cash' => $is_cash
         ]);
 
-        $journal->entries()->create([
-            'amount' => $amount,
-            'type' => Journal::TYPE_CREDIT,
-            'account_id' => $creditAccount->id
+        return $account;
+    }
+
+    /**
+     * @param string $code
+     * @param string $accountTypeCode
+     * @param string $description
+     * @param bool $is_cash
+     * @return Account
+     * @throws InvalidInputException
+     */
+    public function updateAccount(string $code, string $accountTypeCode, string $description, bool $is_cash): Account
+    {
+        if (!isset($this->config['account_types'][$accountTypeCode])) {
+            throw new InvalidInputException("The given account type code ($accountTypeCode) is not available");
+        }
+
+        /** @var Account $account */
+        $account = Account::query()->findOrFail($code);
+
+        $account->update([
+            'code' => $code,
+            'description' => $description,
+            'type_code' => $accountTypeCode,
+            'type_description' => $this->config['account_types'][$accountTypeCode],
+            'is_cash' => $is_cash
         ]);
 
-        return $journal;
+        return $account;
+    }
+
+    /**
+     * @param $code
+     * @return mixed
+     */
+    public function deleteAccount($code)
+    {
+        return Account::query()->where('code', $code)->delete();
+    }
+
+    public function getGroupSeparator()
+    {
+        return $this->config['separators']['group'] ?? '';
+    }
+
+    public function getTypeSeparator()
+    {
+        return $this->config['separators']['type'] ?? '';
     }
 
 }

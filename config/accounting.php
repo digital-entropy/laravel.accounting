@@ -3,13 +3,18 @@
 use DigitalEntropy\Accounting\Entities\Account;
 
 return [
+    // separators x-xxx.xx
+    'separators' => [
+        'type' => '-',
+        'group' => '.'
+    ],
     'account_types' => [
-        '1-' => Account::TYPE_ASSET,
-        '2-' => Account::TYPE_LIABILITY,
-        '3-' => Account::TYPE_EQUITY,
-        '4-' => Account::TYPE_REVENUE,
-        '5-' => Account::TYPE_EXPENSE,
-        '6-' => Account::TYPE_OTHER
+        '1' => Account::TYPE_ASSET,
+        '2' => Account::TYPE_LIABILITY,
+        '3' => Account::TYPE_EQUITY,
+        '4' => Account::TYPE_REVENUE,
+        '5' => Account::TYPE_EXPENSE,
+        '6' => Account::TYPE_OTHER
     ],
     'statements' => [
         'balance_sheets' => [
