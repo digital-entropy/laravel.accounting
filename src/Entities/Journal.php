@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Journal
- * @package DigitalEntropy\Accounting\Entities
+ * @package DigitalEntropy\AccountingManager\Entities
  * @property int id
  */
 class Journal extends Model

@@ -4,12 +4,12 @@
 namespace DigitalEntropy\Accounting\Entities;
 
 
-use DigitalEntropy\Accounting\Accounting;
+use DigitalEntropy\Accounting\AccountingManager;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Account
- * @package DigitalEntropy\Accounting\Entities
+ * @package DigitalEntropy\AccountingManager\Entities
  * @property int id
  */
 class Account extends Model
@@ -38,7 +38,7 @@ class Account extends Model
         'combined_code'
     ];
 
-    public function getCombinedCodeAttribute(Accounting $accounting)
+    public function getCombinedCodeAttribute(AccountingManager $accounting)
     {
         return implode('', [
             $this->attributes['type_code'],

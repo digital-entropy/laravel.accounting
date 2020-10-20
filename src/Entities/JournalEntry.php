@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class JournalEntry
- * @package DigitalEntropy\Accounting\Entities
+ * @package DigitalEntropy\AccountingManager\Entities
  * @property int amount
  * @property string type
  */

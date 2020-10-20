@@ -8,7 +8,7 @@ use DigitalEntropy\Accounting\Entities\Account;
 use DigitalEntropy\Accounting\Exceptions\InvalidInputException;
 use Illuminate\Support\Collection;
 
-class Accounting
+class AccountingManager
 {
     protected $config;
     protected $accountTypes;
@@ -44,7 +44,7 @@ class Accounting
      * @param bool $grouped
      * @return Collection
      */
-    public function getAccounts(bool $sorted = true, bool $grouped = false)
+    public function getAccounts(bool $sorted = true, bool $grouped = false): Collection
     {
         $accountQuery = Account::query();
 
@@ -131,7 +131,7 @@ class Accounting
     /**
      * @return JournalFactory
      */
-    public function makeJournal()
+    public function makeJournal(): JournalFactory
     {
         return new JournalFactory();
     }

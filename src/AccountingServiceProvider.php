@@ -11,8 +11,8 @@ class AccountingServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/accounting.php', 'accounting');
 
-        $this->app->singleton(Accounting::class, function ($app) {
-            return new Accounting($app['config']['accounting']);
+        $this->app->singleton(AccountingManager::class, function ($app) {
+            return new AccountingManager($app['config']['accounting']);
         });
     }
 
