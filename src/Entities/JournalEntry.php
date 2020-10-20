@@ -17,6 +17,8 @@ class JournalEntry extends Model
     protected $table = 'journals_entries';
 
     protected $fillable = [
+        'journal_id',
+        'account_id',
         'type',
         'memo',
         'amount',

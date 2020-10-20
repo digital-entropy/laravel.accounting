@@ -128,6 +128,14 @@ class Accounting
         return Account::query()->where('code', $code)->delete();
     }
 
+    /**
+     * @return JournalFactory
+     */
+    public function makeJournal()
+    {
+        return new JournalFactory();
+    }
+
     public function getGroupSeparator()
     {
         return $this->config['separators']['group'] ?? '';
