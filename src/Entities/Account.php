@@ -12,19 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  * @package DigitalEntropy\AccountingManager\Entities
  * @property int id
  */
-class Account extends Model
+class Account extends Model implements \DigitalEntropy\Accounting\Contracts\Account
 {
-
-    const TYPE_ASSET = "ASSET";
-    const TYPE_LIABILITY = "LIABILITY";
-    const TYPE_EQUITY = "EQUITY";
-    const TYPE_REVENUE = "REVENUE";
-    const TYPE_EXPENSE = "EXPENSE";
-    const TYPE_OTHER = "OTHER";
-
-    const TYPE_CASH = "CASH";
-    const TYPE_NON_CASH = "NON_CASH";
-
     protected $fillable = [
         'code',
         'description',
@@ -35,4 +24,33 @@ class Account extends Model
         'is_cash'
     ];
 
+    function getIdentifier(): string
+    {
+        return $this->getKeyName();
+    }
+
+    function getCode(): string
+    {
+        return $this->attributes['code'];
+    }
+
+    function getDescription(): string
+    {
+        return $this->attributes['description'];
+    }
+
+    function isCash(): bool
+    {
+        return $this->attributes['is_cash'];
+    }
+
+    function getAccountTypeCode(): string
+    {
+        return $this->attributes['account_type_code'];
+    }
+
+    function getAccountTypeDescription(): string
+    {
+        return $this->attributes['account_type_description'];
+    }
 }

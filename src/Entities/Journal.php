@@ -24,6 +24,11 @@ class Journal extends Model implements \DigitalEntropy\Accounting\Contracts\Jour
         'ref'
     ];
 
+    function getIdentifier(): string
+    {
+        return $this->getKeyname();
+    }
+
     public function entries()
     {
         return $this->hasMany(Journal\Entry::class);

@@ -1,6 +1,6 @@
 <?php
 
-use DigitalEntropy\Accounting\Entities\Account;
+use DigitalEntropy\Accounting\Contracts\Account;
 
 return [
     // separators x-xxx.xx

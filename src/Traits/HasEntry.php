@@ -4,6 +4,7 @@
 namespace DigitalEntropy\Accounting\Traits;
 
 
+use DigitalEntropy\Accounting\AccountingStatement;
 use DigitalEntropy\Accounting\Contracts\Account;
 use DigitalEntropy\Accounting\Contracts\Journal;
 use DigitalEntropy\Accounting\Contracts\Journal\Entry;
@@ -11,16 +12,6 @@ use DigitalEntropy\Accounting\Contracts\Reports\Statement;
 
 trait HasEntry
 {
-
-    /**
-     * Registrar identifier.
-     *
-     * @return string
-     */
-    function getIdentifier(): string
-    {
-        return 'id';
-    }
 
     /**
      * Create a journal of entries.
@@ -64,6 +55,9 @@ trait HasEntry
      */
     function getStatements($ownOnly = true): Statement
     {
-
+        return new AccountingStatement(
+            config('accounting'),
+            $ownOnly ? $this->getKey() : null
+        );
     }
 }
