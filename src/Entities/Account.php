@@ -4,11 +4,11 @@
 namespace DigitalEntropy\Accounting\Entities;
 
 
-use DigitalEntropy\Accounting\AccountingManager;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Account
+ *
  * @package DigitalEntropy\AccountingManager\Entities
  * @property int id
  */
@@ -27,26 +27,12 @@ class Account extends Model
 
     protected $fillable = [
         'code',
-        'group_code',
         'description',
+        'group_code',
+        'group_description',
         'type_code',
         'type_description',
         'is_cash'
     ];
-
-    protected $appends = [
-        'combined_code'
-    ];
-
-    public function getCombinedCodeAttribute(AccountingManager $accounting)
-    {
-        return implode('', [
-            $this->attributes['type_code'],
-            $accounting->getTypeSeparator(),
-            $this->attributes['code'],
-            $accounting->getGroupSeparator(),
-            $this->attributes['group_code']
-        ]);
-    }
 
 }

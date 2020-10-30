@@ -18,42 +18,19 @@ return [
     ],
     'statements' => [
         'balance_sheets' => [
-            'cash_condition' => [
-                Account::TYPE_CASH,
-                Account::TYPE_NON_CASH
-            ],
-            'left' => [
-                Account::TYPE_ASSET
-            ],
-            'right' => [
-                Account::TYPE_LIABILITY,
-                Account::TYPE_EQUITY
-            ]
+            'cash_only' => false,
+            'left' => ['1'],
+            'right' => ['2', '3']
         ],
         'profit_loss' => [
-            'cash_condition' => [
-                Account::TYPE_CASH,
-                Account::TYPE_NON_CASH
-            ],
-            'left' => [
-                Account::TYPE_REVENUE
-            ],
-            'right' => [
-                Account::TYPE_EXPENSE,
-                Account::TYPE_OTHER
-            ]
+            'cash_only' => false,
+            'left' => ['4'],
+            'right' => ['5', '6']
         ],
         'cash_flow' => [
-            'cash_condition' => [
-                Account::TYPE_CASH
-            ],
-            'left' => [
-                Account::TYPE_ASSET
-            ],
-            'right' => [
-                Account::TYPE_LIABILITY,
-                Account::TYPE_EQUITY
-            ]
+            'cash_only' => true,
+            'left' => ['1'],
+            'right' => ['2', '3']
         ]
     ]
 ];
