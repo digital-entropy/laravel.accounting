@@ -21,7 +21,7 @@ class CreateAccountsTable extends Migration
             $table->string('type_code');
             $table->string('type_description')->nullable();
             $table->string('group_code')->nullable();
-            $table->string('group_descriptin')->nullable();
+            $table->string('group_description')->nullable();
             $table->boolean('is_cash')->default(false);
             $table->timestamps();
         });

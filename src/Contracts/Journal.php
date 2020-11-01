@@ -4,8 +4,8 @@
 namespace DigitalEntropy\Accounting\Contracts;
 
 
-use DigitalEntropy\Accounting\Contracts\Journal\Entry;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 interface Journal
 {
@@ -27,8 +27,15 @@ interface Journal
     /**
      * Get the journal attached entries.
      *
-     * @return array<Entry>
+     * @return HasMany
      */
-    function getEntries(): Collection;
+    function entries(): HasMany;
+
+    /**
+     * Get instance of recordable of a journal.
+     *
+     * @return MorphTo
+     */
+    function recordable(): MorphTo;
 
 }

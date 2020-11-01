@@ -5,7 +5,8 @@ namespace DigitalEntropy\Accounting\Entities;
 
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * Class Journal
@@ -18,29 +19,54 @@ class Journal extends Model implements \DigitalEntropy\Accounting\Contracts\Jour
     const TYPE_DEBIT = 'DEBIT';
     const TYPE_CREDIT = 'CREDIT';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var string[]
+     */
     protected $fillable = [
         'amount',
         'memo',
         'ref'
     ];
 
+    /**
+     * Journal unique identifier.
+     *
+     * @return string
+     */
     function getIdentifier(): string
     {
         return $this->getKeyname();
     }
 
-    public function entries()
-    {
-        return $this->hasMany(Journal\Entry::class);
-    }
-
+    /**
+     * Get the journal memo.
+     *
+     * @return string
+     */
     function getMemo(): string
     {
         return $this->attributes['memo'] ?? '';
     }
 
-    function getEntries(): Collection
+    /**
+     * Define `hasMany` relationship with Entry model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function entries(): HasMany
     {
-        return $this->entries()->latest()->get();
+        return $this->hasMany(Journal\Entry::class);
+    }
+
+    /**
+     * Get instance of recordable of a journal.
+     *
+     * @return MorphTo
+     */
+    function recordable(): MorphTo
+    {
+        return $this->morphTo('recordable');
     }
 }
