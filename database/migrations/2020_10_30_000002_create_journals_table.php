@@ -18,6 +18,8 @@ class CreateJournalsTable extends Migration
             $table->unsignedBigInteger('amount')->default(0);
             $table->string('memo')->nullable();
             $table->string('ref')->nullable();
+            $table->nullableMorphs('recordable');
+
             $table->timestamps();
         });
     }

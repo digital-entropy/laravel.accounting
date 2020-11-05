@@ -7,6 +7,11 @@ use Illuminate\Support\ServiceProvider;
 class AccountingServiceProvider extends ServiceProvider
 {
 
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/accounting.php', 'accounting');
@@ -16,6 +21,9 @@ class AccountingServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Boot application.
+     */
     public function boot()
     {
         if ($this->app->runningInConsole()) {

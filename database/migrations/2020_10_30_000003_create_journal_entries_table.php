@@ -20,6 +20,7 @@ class CreateJournalEntriesTable extends Migration
             $table->foreignIdFor(Journal::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Account::class)->constrained()->restrictOnDelete();
             $table->unsignedBigInteger('amount')->default(0);
+            $table->morphs('author');
             $table->enum('type', [Journal::TYPE_CREDIT, Journal::TYPE_DEBIT]);
             $table->string('memo')->nullable();
             $table->string('ref')->nullable();

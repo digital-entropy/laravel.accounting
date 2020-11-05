@@ -4,53 +4,76 @@
 namespace DigitalEntropy\Accounting;
 
 
+use DigitalEntropy\Accounting\Contracts\EntryAuthor;
+use DigitalEntropy\Accounting\Contracts\Recordable;
 use DigitalEntropy\Accounting\Entities\Account;
 use DigitalEntropy\Accounting\Entities\Journal;
 use DigitalEntropy\Accounting\Exceptions\NotBalanceJournalEntryException;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class JournalFactory
 {
 
+    /**
+     * @var array
+     */
     protected $entries;
 
+    /**
+     * Make instance.
+     *
+     * @return static
+     */
     public static function make()
     {
         return new static;
     }
 
+    /**
+     * JournalFactory constructor.
+     */
     public function __construct()
     {
         $this->entries = [];
     }
 
     /**
+     * Add entry.
+     *
      * @param Account $account
      * @param $amount
-     * @param $memo
+     * @param null $memo
+     * @param EntryAuthor $author
      * @param string $type
      * @param null $ref
      * @return $this
      */
-    public function addEntry(Account $account, $amount, $memo = null, $type = Journal::TYPE_DEBIT, $ref = null)
+    public function addEntry(Account $account, $amount, EntryAuthor $author, $memo = null, $type = Journal::TYPE_DEBIT, $ref = null)
     {
-        $this->entries[] = [
-            'account_id' => $account->id,
+        $this->entries[] = collect([
+            'account' => $account,
             'type' => $type,
             'memo' => $memo,
             'amount' => $amount,
-            'ref' => $ref
-        ];
+            'ref' => $ref,
+            'author' => $author
+        ]);
+
         return $this;
     }
 
     /**
+     * Save created entries.
+     *
+     * @param Recordable|null $recordable
      * @param string|null $memo
-     * @param null $ref
+     * @param string|null $ref
      * @param bool $strict
      * @return Journal|null
      * @throws NotBalanceJournalEntryException
      */
-    public function save(string $memo, $ref = null, bool $strict = true)
+    public function save(?Recordable $recordable, ?string $memo, ?string $ref = null, $strict = true)
     {
         $debitBalance = 0;
         $creditBalance = 0;
@@ -66,21 +89,40 @@ class JournalFactory
             }
         }
 
-        if ($balance != 0) {
+        if ($balance != 0 && $strict) {
             throw new NotBalanceJournalEntryException($balance, $debitBalance, $creditBalance);
         }
 
-        /** @var Journal $journal */
-        $journal = Journal::query()->create([
+        $journal = new Journal();
+        $journal->fill([
             'memo' => $memo,
             'ref' => $ref
-        ])->fresh();
+        ]);
 
-        foreach ($this->entries as $item) {
-            $journal->entries()->create($item);
+        if (! is_null($recordable)) {
+            if ($recordable instanceof Model) {
+                $journal->recordable()->associate($recordable);
+            } else {
+                throw new \InvalidArgumentException('Param $recordable must be instance of eloquent model');
+            }
         }
 
-        return $journal->fresh(['entries']);
+        $journal->save();
+
+        /** @var Collection $entryAttributes */
+        foreach ($this->entries as $entryAttributes) {
+            $entry = new Journal\Entry();
+            $entry->fill($entryAttributes->except('account', 'author')->toArray());
+
+            $entry->journal()->associate($journal);
+            $entry->account()->associate($entryAttributes->get('account'));
+            $entry->author()->associate($entryAttributes->get('author'));
+            $entry->save();
+        }
+
+        $journal->load(['entries']);
+
+        return $journal;
     }
 
 }
