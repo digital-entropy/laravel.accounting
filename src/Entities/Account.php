@@ -76,7 +76,7 @@ class Account extends Model implements \DigitalEntropy\Accounting\Contracts\Acco
      */
     function getAccountTypeCode(): string
     {
-        return $this->attributes['account_type_code'];
+        return $this->attributes['type_code'];
     }
 
     /**
@@ -86,6 +86,6 @@ class Account extends Model implements \DigitalEntropy\Accounting\Contracts\Acco
      */
     function getAccountTypeDescription(): string
     {
-        return $this->attributes['account_type_description'];
+        return $this->attributes['type_description'];
     }
 }

@@ -13,10 +13,10 @@ class CreateAccountsTable extends Migration
      */
     public function up()
     {
-        // Account code = {type_code}-{code}.{group_code}
+        // Account full code = {type_code}-{code}.{group_code}
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
+            $table->integer('code');
             $table->string('description')->nullable();
             $table->string('type_code');
             $table->string('type_description')->nullable();
