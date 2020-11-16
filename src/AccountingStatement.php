@@ -27,7 +27,7 @@ class AccountingStatement implements Statement
         $this->ownerId = $entryOwnerId;
     }
 
-    function getAccountBalance(Account $account, $debit = true, $cash_only = false, ?CarbonPeriod $period = null): int
+    function getAccountBalance(Account $account, $debit = true, $cash_only = false, ?CarbonPeriod $period = null, $group = null): int
     {
         return Entry::query()
             ->where(function (Builder $query) use ($period) {
@@ -37,8 +37,9 @@ class AccountingStatement implements Statement
                         ->whereDate('created_at', '<=', $period->end);
                 }
                 return $query;
-            })
-            ->where(function (Builder $query) use ($cash_only) {
+            })->when($group !== null, function (Builder $query) use ($group) {
+                return $query->where('group_code', $group);
+            })->where(function (Builder $query) use ($cash_only) {
                 if ($cash_only) {
                     return $query->where('is_cash', true);
                 }
