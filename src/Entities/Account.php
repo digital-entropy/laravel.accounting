@@ -88,4 +88,70 @@ class Account extends Model implements \DigitalEntropy\Accounting\Contracts\Acco
     {
         return $this->attributes['type_description'];
     }
+
+    /**
+     * Get debit balance.
+     *
+     * @return int
+     */
+    public function getDebit(): int
+    {
+        return $this->getAttribute('debit') ?? 0;
+    }
+
+    /**
+     * Get credit balance.
+     *
+     * @return int
+     */
+    public function getCredit(): int
+    {
+        return $this->getAttribute('credit') ?? 0;
+    }
+
+    /**
+     * Get balance custom accessor.
+     *
+     * @return float|int
+     */
+    public function getBalanceAttribute()
+    {
+        return abs($this->getDebit() - $this->getCredit());
+    }
+
+    /**
+     * Get hand_side custom accessor.
+     *
+     * @return string
+     */
+    public function getHandSideAttribute()
+    {
+        return $this->leftHandSide() ? "left" : "right";
+    }
+
+    /**
+     * Check if account is left hand side
+     *
+     * @return bool
+     */
+    public function leftHandSide()
+    {
+        $types = array_flip(config('accounting.account_types'));
+        $currentAccountType = $types[$this->getAccountTypeCode()];
+
+        return array_key_exists($currentAccountType, config('accounting.left'));
+    }
+
+    /**
+     * Check if account is right hand side
+     *
+     * @return bool
+     */
+    public function rightHandSide()
+    {
+        $types = array_flip(config('accounting.account_types'));
+        $currentAccountType = $types[$this->getAccountTypeCode()];
+
+        return array_key_exists($currentAccountType, config('accounting.right'));
+    }
 }

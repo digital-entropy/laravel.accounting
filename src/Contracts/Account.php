@@ -18,41 +18,55 @@ interface Account
      *
      * @return string
      */
-    function getIdentifier(): string;
+    public function getIdentifier(): string;
 
     /**
      * Account code.
      *
      * @return string
      */
-    function getCode(): string;
+    public function getCode(): string;
 
     /**
      * Description of an account.
      *
      * @return string
      */
-    function getDescription(): string;
+    public function getDescription(): string;
 
     /**
      * Is account cash?
      *
      * @return bool
      */
-    function isCash(): bool;
+    public function isCash(): bool;
 
     /**
      * Get account type.
      *
      * @return string
      */
-    function getAccountTypeCode(): string;
+    public function getAccountTypeCode(): string;
 
     /**
      * Get account type description.
      *
      * @return string
      */
-    function getAccountTypeDescription(): string;
+    public function getAccountTypeDescription(): string;
+
+    /**
+     * Get debit balance.
+     *
+     * @return int
+     */
+    public function getDebit(): int;
+
+    /**
+     * Get credit balance.
+     *
+     * @return int
+     */
+    public function getCredit(): int;
 
 }

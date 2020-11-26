@@ -16,21 +16,39 @@ return [
         '5' => Account::TYPE_EXPENSE,
         '6' => Account::TYPE_OTHER
     ],
+
+    // Default model
+    'models' => [
+        'journal' => \DigitalEntropy\Accounting\Entities\Journal::class,
+        'entry' => \DigitalEntropy\Accounting\Entities\Journal\Entry::class,
+        'account' => \DigitalEntropy\Accounting\Entities\Account::class
+    ],
+
+    // Standard equation of accounting system
+    // Dividend + Expenses + Asset = Liabilities + Owner's Equity + Revenue',
+    'left' => [
+        '1', '5'
+    ],
+    'right' => [
+        '2', '3', '4'
+    ],
+
+    // Standard accounting statements
     'statements' => [
         'balance_sheets' => [
+            'name' => 'Balance Sheet',
             'cash_only' => false,
-            'left' => ['1'],
-            'right' => ['2', '3']
+            'accounts' => '1', '2', '3',
         ],
-        'profit_loss' => [
-            'cash_only' => false,
-            'left' => ['4'],
-            'right' => ['5', '6']
+        'income' => [
+            'name' => 'Income',
+            'cash_only' => true,
+            'accounts' => '4', '5', '6',
         ],
         'cash_flow' => [
+            'name' => 'Cash Flow',
             'cash_only' => true,
-            'left' => ['1'],
-            'right' => ['2', '3']
+            'accounts' => '1', '2', '3', '4', '5', '6'
         ]
     ]
 ];

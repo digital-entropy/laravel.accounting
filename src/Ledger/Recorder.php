@@ -1,37 +1,28 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting;
+namespace DigitalEntropy\Accounting\Ledger;
 
 
+use DigitalEntropy\Accounting\Contracts\Account;
 use DigitalEntropy\Accounting\Contracts\EntryAuthor;
+use DigitalEntropy\Accounting\Contracts\Journal;
+use DigitalEntropy\Accounting\Contracts\Journal\Entry;
 use DigitalEntropy\Accounting\Contracts\Recordable;
-use DigitalEntropy\Accounting\Entities\Account;
-use DigitalEntropy\Accounting\Entities\Journal;
 use DigitalEntropy\Accounting\Exceptions\NotBalanceJournalEntryException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-class JournalFactory
+class Recorder
 {
 
     /**
      * @var array
      */
-    protected $entries;
+    protected array $entries;
 
     /**
-     * Make instance.
-     *
-     * @return static
-     */
-    public static function make()
-    {
-        return new static;
-    }
-
-    /**
-     * JournalFactory constructor.
+     * Recorder constructor.
      */
     public function __construct()
     {
@@ -42,14 +33,14 @@ class JournalFactory
      * Add entry.
      *
      * @param Account $account
-     * @param $amount
+     * @param int $amount
      * @param null $memo
      * @param EntryAuthor $author
      * @param string $type
      * @param null $ref
      * @return $this
      */
-    public function addEntry(Account $account, $amount, EntryAuthor $author, $memo = null, $type = Journal::TYPE_DEBIT, $ref = null)
+    private function addEntry(Account $account, int $amount, EntryAuthor $author, string $type, $memo = null, $ref = null)
     {
         $this->entries[] = collect([
             'account' => $account,
@@ -64,6 +55,40 @@ class JournalFactory
     }
 
     /**
+     * Record debit account.
+     *
+     * @param Account $account
+     * @param $amount
+     * @param EntryAuthor $author
+     * @param null $memo
+     * @param null $ref
+     * @return Recorder
+     */
+    public function debit(Account $account, $amount, EntryAuthor $author, $memo = null, $ref = null)
+    {
+        $this->addEntry($account, $amount, $author, Entry::TYPE_DEBIT, $memo, $ref);
+
+        return $this;
+    }
+
+    /**
+     * Record credit account.
+     *
+     * @param Account $account
+     * @param $amount
+     * @param EntryAuthor $author
+     * @param null $memo
+     * @param null $ref
+     * @return Recorder
+     */
+    public function credit(Account $account, $amount, EntryAuthor $author, $memo = null, $ref = null)
+    {
+        $this->addEntry($account, $amount, $author, Entry::TYPE_CREDIT, $memo, $ref);
+
+        return $this;
+    }
+
+    /**
      * Save created entries.
      *
      * @param Recordable|null $recordable
@@ -73,14 +98,14 @@ class JournalFactory
      * @return Journal|null
      * @throws NotBalanceJournalEntryException
      */
-    public function save(?Recordable $recordable, ?string $memo, ?string $ref = null, $strict = true)
+    public function record(?Recordable $recordable, ?string $memo, ?string $ref = null, $strict = true)
     {
         $debitBalance = 0;
         $creditBalance = 0;
         $balance = 0;
 
         foreach ($this->entries as $item) {
-            if ($item['type'] == Journal::TYPE_DEBIT) {
+            if ($item['type'] == Entry::TYPE_DEBIT) {
                 $balance += $item['amount'];
                 $debitBalance += $item['amount'];
             } else {
@@ -93,7 +118,10 @@ class JournalFactory
             throw new NotBalanceJournalEntryException($balance, $debitBalance, $creditBalance);
         }
 
-        $journal = new Journal();
+        $journalClass = config('accounting.models.journal');
+
+        /** @var Journal|Model $journal */
+        $journal = new $journalClass();
         $journal->fill([
             'memo' => $memo,
             'ref' => $ref
@@ -111,7 +139,11 @@ class JournalFactory
 
         /** @var Collection $entryAttributes */
         foreach ($this->entries as $entryAttributes) {
-            $entry = new Journal\Entry();
+
+            $modelClass = config('accounting.models.entry');
+
+            /** @var Entry|Model $entry */
+            $entry = new $modelClass;
             $entry->fill($entryAttributes->except('account', 'author')->toArray());
 
             $entry->journal()->associate($journal);

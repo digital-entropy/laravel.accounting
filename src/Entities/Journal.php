@@ -16,8 +16,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Journal extends Model implements \DigitalEntropy\Accounting\Contracts\Journal
 {
-    const TYPE_DEBIT = 'DEBIT';
-    const TYPE_CREDIT = 'CREDIT';
 
     /**
      * The attributes that are mass assignable.

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Contracts\Reports;
+namespace DigitalEntropy\Accounting\Contracts\Report;
 
 
 use Carbon\CarbonPeriod;
