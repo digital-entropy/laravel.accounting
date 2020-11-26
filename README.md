@@ -1,5 +1,7 @@
 # Laravel Accounting
 
+![LaravelAccounting Build Status](https://github.com/digital-entropy/laravel.accounting/workflows/Laravel/badge.svg)
+
 ### Setup
 
 Publish config & migration
