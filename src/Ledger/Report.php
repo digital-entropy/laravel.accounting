@@ -30,11 +30,12 @@ class Report
      * Get statement
      *
      * @param $key
+     * @param string|null $groupCode
      * @param CarbonPeriod|null $period
      * @return array
      * @throws StatementNotFoundException
      */
-    public function getStatement($key, ?CarbonPeriod $period = null)
+    public function getStatement($key, string $groupCode = null, ?CarbonPeriod $period = null)
     {
         if (! array_key_exists($key, config('accounting.statements'))) {
             throw new StatementNotFoundException($key);
@@ -46,6 +47,7 @@ class Report
             ->period($period)
             ->withBalance()
             ->accountTypeCode($statement['accounts'])
+            ->groupCode($groupCode)
             ->cash($statement["cash_only"] ?? true)->get();
 
         $debit = 0;
