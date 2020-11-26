@@ -5,6 +5,7 @@ namespace DigitalEntropy\Accounting\Entities;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Account
@@ -14,6 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Account extends Model implements \DigitalEntropy\Accounting\Contracts\Account
 {
+    use SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *

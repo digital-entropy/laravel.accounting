@@ -4,7 +4,6 @@
 namespace DigitalEntropy\Accounting\Concerns;
 
 
-use DigitalEntropy\Accounting\Entities\Journal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -18,7 +17,7 @@ trait HasJournals
      */
     public function journals()
     {
-        return $this->morphMany(Journal::class, 'recordable');
+        return $this->morphMany(config('accounting.models.journal'), 'recordable');
     }
 
     /**

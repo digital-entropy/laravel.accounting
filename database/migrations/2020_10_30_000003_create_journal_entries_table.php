@@ -1,7 +1,6 @@
 <?php
 
-use DigitalEntropy\Accounting\Entities\Account;
-use DigitalEntropy\Accounting\Entities\Journal;
+use DigitalEntropy\Accounting\Contracts\Journal\Entry;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,13 +16,14 @@ class CreateJournalEntriesTable extends Migration
     {
         Schema::create('journal_entries', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Journal::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Account::class)->constrained()->restrictOnDelete();
+            $table->foreignIdFor(config('accounting.models.journal'))->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(config('accounting.models.account'))->constrained()->restrictOnDelete();
             $table->unsignedBigInteger('amount')->default(0);
             $table->morphs('author');
-            $table->enum('type', [Journal::TYPE_CREDIT, Journal::TYPE_DEBIT]);
+            $table->enum('type', [Entry::TYPE_CREDIT, Entry::TYPE_DEBIT]);
             $table->string('memo')->nullable();
             $table->string('ref')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

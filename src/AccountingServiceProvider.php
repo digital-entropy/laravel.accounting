@@ -28,7 +28,7 @@ class AccountingServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(Report::class, function ($app) {
-            return new Report($app['config']['accounting'], $this->app->make(Builder::class));
+            return new Report($this->app->make(Builder::class));
         });
     }
 

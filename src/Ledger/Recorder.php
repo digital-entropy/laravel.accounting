@@ -35,12 +35,12 @@ class Recorder
      * @param Account $account
      * @param int $amount
      * @param null $memo
-     * @param EntryAuthor $author
+     * @param EntryAuthor|array $author
      * @param string $type
      * @param null $ref
      * @return $this
      */
-    private function addEntry(Account $account, int $amount, EntryAuthor $author, string $type, $memo = null, $ref = null)
+    private function addEntry(Account $account, int $amount, $author, string $type, $memo = null, $ref = null)
     {
         $this->entries[] = collect([
             'account' => $account,
@@ -59,12 +59,12 @@ class Recorder
      *
      * @param Account $account
      * @param $amount
-     * @param EntryAuthor $author
+     * @param EntryAuthor|array $author
      * @param null $memo
      * @param null $ref
      * @return Recorder
      */
-    public function debit(Account $account, $amount, EntryAuthor $author, $memo = null, $ref = null)
+    public function debit(Account $account, $amount, $author, $memo = null, $ref = null)
     {
         $this->addEntry($account, $amount, $author, Entry::TYPE_DEBIT, $memo, $ref);
 
@@ -76,12 +76,12 @@ class Recorder
      *
      * @param Account $account
      * @param $amount
-     * @param EntryAuthor $author
+     * @param EntryAuthor|array $author
      * @param null $memo
      * @param null $ref
      * @return Recorder
      */
-    public function credit(Account $account, $amount, EntryAuthor $author, $memo = null, $ref = null)
+    public function credit(Account $account, $amount, $author, $memo = null, $ref = null)
     {
         $this->addEntry($account, $amount, $author, Entry::TYPE_CREDIT, $memo, $ref);
 
@@ -91,14 +91,14 @@ class Recorder
     /**
      * Save created entries.
      *
-     * @param Recordable|null $recordable
+     * @param Recordable|array|null $recordable
      * @param string|null $memo
      * @param string|null $ref
      * @param bool $strict
      * @return Journal|null
      * @throws NotBalanceJournalEntryException
      */
-    public function record(?Recordable $recordable, ?string $memo, ?string $ref = null, $strict = true)
+    public function record($recordable, ?string $memo = null, ?string $ref = null, $strict = true)
     {
         $debitBalance = 0;
         $creditBalance = 0;
@@ -131,7 +131,8 @@ class Recorder
             if ($recordable instanceof Model) {
                 $journal->recordable()->associate($recordable);
             } else {
-                throw new \InvalidArgumentException('Param $recordable must be instance of eloquent model');
+                $journal->setAttribute('recordable_id', $recordable['recordable_id']);
+                $journal->setAttribute('recordable_type', $recordable['recordable_type']);
             }
         }
 
@@ -148,7 +149,14 @@ class Recorder
 
             $entry->journal()->associate($journal);
             $entry->account()->associate($entryAttributes->get('account'));
-            $entry->author()->associate($entryAttributes->get('author'));
+
+            if ($entryAttributes->get('author') instanceof Model) {
+                $entry->author()->associate($entryAttributes->get('author'));
+            } else {
+                $entry->setAttribute('author_id', $entryAttributes->get('author')['author_id']);
+                $entry->setAttribute('author_type', $entryAttributes->get('author')['author_type']);
+            }
+
             $entry->save();
         }
 

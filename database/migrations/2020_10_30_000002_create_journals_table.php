@@ -19,6 +19,7 @@ class CreateJournalsTable extends Migration
             $table->string('memo')->nullable();
             $table->string('ref')->nullable();
             $table->nullableMorphs('recordable');
+            $table->softDeletes();
 
             $table->timestamps();
         });

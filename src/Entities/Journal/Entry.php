@@ -9,6 +9,7 @@ use DigitalEntropy\Accounting\Entities\Journal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Entry
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Entry extends Model implements \DigitalEntropy\Accounting\Contracts\Journal\Entry
 {
+    use SoftDeletes;
+
     /**
      * The table associated with the model.
      *
@@ -32,6 +35,8 @@ class Entry extends Model implements \DigitalEntropy\Accounting\Contracts\Journa
      * @var string[]
      */
     protected $fillable = [
+        'author_id',
+        'author_type',
         'journal_id',
         'account_id',
         'type',

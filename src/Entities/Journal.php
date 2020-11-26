@@ -7,6 +7,7 @@ namespace DigitalEntropy\Accounting\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Journal
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Journal extends Model implements \DigitalEntropy\Accounting\Contracts\Journal
 {
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +25,8 @@ class Journal extends Model implements \DigitalEntropy\Accounting\Contracts\Jour
      * @var string[]
      */
     protected $fillable = [
+        'recordable_id',
+        'recordable_type',
         'amount',
         'memo',
         'ref'

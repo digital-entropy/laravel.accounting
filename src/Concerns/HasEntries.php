@@ -5,7 +5,6 @@ namespace DigitalEntropy\Accounting\Concerns;
 
 
 use DigitalEntropy\Accounting\Contracts\Journal;
-use DigitalEntropy\Accounting\Entities\Journal\Entry;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasEntries
@@ -18,7 +17,7 @@ trait HasEntries
      */
     public function entries(): MorphMany
     {
-        return $this->morphMany(Entry::class, 'author');
+        return $this->morphMany(config('accounting.models.entry'), 'author');
     }
 
     /**
