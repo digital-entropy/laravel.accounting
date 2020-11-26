@@ -1,6 +1,6 @@
 # Laravel Accounting
 
-![LaravelAccounting Build Status](https://github.com/digital-entropy/laravel.accounting/workflows/Laravel/badge.svg)
+![LaravelAccounting Build Status](https://github.com/digital-entropy/laravel.accounting/workflows/Build/badge.svg)
 
 ### Setup
 
