@@ -61,6 +61,7 @@ class Report
         }
 
         return array_merge($statement, [
+            'name' => $statement['name'],
             'debit' => $debit,
             'credit' => $credit,
             'total' => $debit - $credit,
