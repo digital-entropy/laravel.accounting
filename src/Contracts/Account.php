@@ -4,6 +4,8 @@
 namespace DigitalEntropy\Accounting\Contracts;
 
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 interface Account
 {
     const TYPE_ASSET = "ASSET";
@@ -68,5 +70,12 @@ interface Account
      * @return int
      */
     public function getCredit(): int;
+
+    /**
+     * Define relationship with journal entries.
+     *
+     * @return HasMany
+     */
+    public function entries(): HasMany;
 
 }

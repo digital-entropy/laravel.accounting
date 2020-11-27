@@ -25,7 +25,7 @@ class Builder
     /**
      * @var string
      */
-    private string $account;
+    public string $account;
 
     /**
      * @var CarbonPeriod
@@ -66,7 +66,11 @@ class Builder
      */
     public function withBalance()
     {
-        $this->query->addSelect([
+        $this->query
+            ->whereHas('entries', function ($query) {
+                $query->whereDate('created_at', '>=', $this->period->start)
+                    ->whereDate('created_at', '<=', $this->period->end);
+            })->addSelect([
             'debit' => $this->entry::query()
                 ->selectRaw('sum(amount)')
                 ->whereColumn('account_id', 'accounts.id')

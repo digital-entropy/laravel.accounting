@@ -21,7 +21,8 @@ return [
     'models' => [
         'journal' => \DigitalEntropy\Accounting\Entities\Journal::class,
         'entry' => \DigitalEntropy\Accounting\Entities\Journal\Entry::class,
-        'account' => \DigitalEntropy\Accounting\Entities\Account::class
+        'account' => \DigitalEntropy\Accounting\Entities\Account::class,
+        'general_ledger' => \DigitalEntropy\Accounting\Entities\GeneralLedger::class,
     ],
 
     // Standard equation of accounting system

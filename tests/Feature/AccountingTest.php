@@ -4,16 +4,19 @@
 namespace DigitalEntropy\Accounting\Tests\Feature;
 
 
+use Carbon\Carbon;
 use DigitalEntropy\Accounting\Contracts\Account;
 use DigitalEntropy\Accounting\Contracts\EntryAuthor;
+use DigitalEntropy\Accounting\Contracts\Journal\Entry;
 use DigitalEntropy\Accounting\Contracts\Recordable;
+use DigitalEntropy\Accounting\Ledger\Poster;
 use DigitalEntropy\Accounting\Ledger\Recorder;
 use DigitalEntropy\Accounting\Ledger\Report;
 use DigitalEntropy\Accounting\Tests\TestCase;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
 
 class AccountingTest extends TestCase
 {
@@ -39,11 +42,13 @@ class AccountingTest extends TestCase
         include_once __DIR__ . './../../database/migrations/2020_10_30_000001_create_accounts_table.php';
         include_once __DIR__ . './../../database/migrations/2020_10_30_000002_create_journals_table.php';
         include_once __DIR__ . './../../database/migrations/2020_10_30_000003_create_journal_entries_table.php';
+        include_once __DIR__ . './../../database/migrations/2020_11_27_000001_create_general_ledgers_table.php';
 
         // run the up() method of that migration class
         (new \CreateAccountsTable())->up();
         (new \CreateJournalsTable())->up();
         (new \CreateJournalEntriesTable())->up();
+        (new \CreateGeneralLedgersTable())->up();
     }
 
     public function testCreateAccount()
@@ -164,5 +169,26 @@ class AccountingTest extends TestCase
         $balanceSheet = $report->getStatement("balance_sheet");
 
         $this->assertEquals($balanceSheet['debit'], $balanceSheet['credit']);
+
+        // Post into ledger.
+
+        /** @var Poster $poster */
+        $poster = $this->app->make(Poster::class);
+        $poster->post();
+
+        // Assert the account only two, since we just modify 2 account
+        $this->assertDatabaseCount('general_ledgers', 2);
+
+        /** @var Poster $poster */
+        $poster = $this->app->make(Poster::class);
+        $summary = $poster->summary()->get();
+
+        $this->assertEquals(2, $summary->count());
+
+        /** @var Poster $poster */
+        $poster = $this->app->make(Poster::class);
+        $summaryByType = $poster->summaryByAccountType();
+
+        $this->assertEquals(2, $summaryByType->count());
     }
 }

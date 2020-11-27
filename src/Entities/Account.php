@@ -5,6 +5,7 @@ namespace DigitalEntropy\Accounting\Entities;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -156,5 +157,15 @@ class Account extends Model implements \DigitalEntropy\Accounting\Contracts\Acco
         $currentAccountType = $types[$this->getAccountTypeCode()];
 
         return array_key_exists($currentAccountType, config('accounting.right'));
+    }
+
+    /**
+     * Define relationship with journal entries.
+     *
+     * @return HasMany
+     */
+    public function entries(): HasMany
+    {
+        return $this->hasMany(config('accounting.models.entry'));
     }
 }

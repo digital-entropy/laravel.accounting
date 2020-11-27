@@ -3,6 +3,7 @@
 namespace DigitalEntropy\Accounting;
 
 use DigitalEntropy\Accounting\Ledger\ChartOfAccount\Builder;
+use DigitalEntropy\Accounting\Ledger\Poster;
 use DigitalEntropy\Accounting\Ledger\Recorder;
 use DigitalEntropy\Accounting\Ledger\Report;
 use Illuminate\Support\ServiceProvider;
@@ -19,16 +20,20 @@ class AccountingServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/accounting.php', 'accounting');
 
-        $this->app->singleton(Recorder::class, function () {
+        $this->app->bind(Recorder::class, function () {
             return new Recorder();
         });
 
-        $this->app->singleton(Builder::class, function () {
+        $this->app->bind(Builder::class, function () {
             return new Builder();
         });
 
-        $this->app->singleton(Report::class, function ($app) {
-            return new Report($this->app->make(Builder::class));
+        $this->app->bind(Report::class, function ($app) {
+            return new Report($app->make(Builder::class));
+        });
+
+        $this->app->bind(Poster::class, function ($app) {
+            return new Poster($app->make(Builder::class));
         });
     }
 
