@@ -40,7 +40,7 @@ trait HasEntries
      *
      * @return void
      */
-    function createManyEntries(Journal $journal, $data)
+    function createManyEntry(Journal $journal, $data)
     {
         foreach ($data as $item) {
             $this->createEntry($journal, $item);
