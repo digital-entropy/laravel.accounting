@@ -94,7 +94,7 @@ class Builder
      * @param bool $cashOnly
      * @return $this
      */
-    public function cash(bool $cashOnly)
+    public function cash(bool $cashOnly = true)
     {
         $this->query->where('is_cash', $cashOnly);
 
@@ -111,8 +111,6 @@ class Builder
     {
         if (! is_null($code)) {
             $this->query->where('group_code', $code);
-        } else {
-            $this->query->whereNull('group_code');
         }
 
         return $this;
@@ -121,15 +119,15 @@ class Builder
     /**
      * Get specific account type_code.
      *
-     * @param mixed ...$codes
+     * @param mixed ...$types
      * @return $this
      */
-    public function accountTypeCode(...$codes)
+    public function accountTypeCode(...$types)
     {
-        if (is_array($codes)) {
-            $this->query->whereIn('type_code', $codes);
+        if (is_array($types[0])) {
+            $this->query->whereIn('type_code', $types[0]);
         } else {
-            $this->query->where('type_code', $codes);
+            $this->query->where('type_code', $types);
         }
 
         return $this;

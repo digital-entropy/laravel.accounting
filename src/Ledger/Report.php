@@ -8,6 +8,7 @@ use Carbon\CarbonPeriod;
 use DigitalEntropy\Accounting\Contracts\Account;
 use DigitalEntropy\Accounting\Exceptions\StatementNotFoundException;
 use DigitalEntropy\Accounting\Ledger\ChartOfAccount\Builder;
+use Illuminate\Support\Arr;
 
 class Report
 {
@@ -42,17 +43,22 @@ class Report
         }
 
         $statement = config('accounting.statements.' . $key);
+        $types = Arr::only(config('accounting.account_types'), $statement['accounts']);
 
-        $accounts = $this->builder
+        $this->builder
             ->period($period)
             ->withBalance()
-            ->accountTypeCode($statement['accounts'])
             ->groupCode($groupCode)
-            ->cash($statement["cash_only"] ?? true)->get();
+            ->accountTypeCode(Arr::flatten($types));
+
+        if ($statement['cash_only']) {
+            $this->builder->cash($statement["cash_only"]);
+        }
+
+        $accounts = $this->builder->get();
 
         $debit = 0;
         $credit = 0;
-
 
         /** @var Account $account */
         foreach ($accounts as $account) {

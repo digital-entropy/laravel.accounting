@@ -39,17 +39,17 @@ return [
         'balance_sheet' => [
             'name' => 'Balance Sheet',
             'cash_only' => false,
-            'accounts' => '1', '2', '3',
+            'accounts' => ['1', '2', '3',]
         ],
         'income' => [
             'name' => 'Income',
             'cash_only' => true,
-            'accounts' => '4', '5', '6',
+            'accounts' => ['4', '5', '6',]
         ],
         'cash_flow' => [
             'name' => 'Cash Flow',
             'cash_only' => true,
-            'accounts' => '1', '2', '3', '4', '5', '6'
+            'accounts' => ['1', '2', '3', '4', '5', '6']
         ]
     ]
 ];
