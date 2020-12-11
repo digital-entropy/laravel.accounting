@@ -123,6 +123,7 @@ class Recorder
         /** @var Journal|Model $journal */
         $journal = new $journalClass();
         $journal->fill([
+            'amount' => intval(abs($debitBalance)),
             'memo' => $memo,
             'ref' => $ref
         ]);
