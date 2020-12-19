@@ -4,6 +4,7 @@
 namespace DigitalEntropy\Accounting\Ledger;
 
 
+use Carbon\Carbon;
 use DigitalEntropy\Accounting\Contracts\Account;
 use DigitalEntropy\Accounting\Contracts\EntryAuthor;
 use DigitalEntropy\Accounting\Contracts\Journal;
@@ -34,13 +35,14 @@ class Recorder
      *
      * @param Account $account
      * @param int $amount
-     * @param null $memo
      * @param EntryAuthor|array $author
      * @param string $type
+     * @param null $memo
      * @param null $ref
+     * @param Carbon|null $date
      * @return $this
      */
-    private function addEntry(Account $account, int $amount, $author, string $type, $memo = null, $ref = null)
+    private function addEntry(Account $account, int $amount, $author, string $type, $memo = null, $ref = null, ?Carbon $date = null)
     {
         $this->entries[] = collect([
             'account' => $account,
@@ -48,7 +50,8 @@ class Recorder
             'memo' => $memo,
             'amount' => $amount,
             'ref' => $ref,
-            'author' => $author
+            'author' => $author,
+            'date' => ($date ?? now())->toDateTimeString()
         ]);
 
         return $this;
@@ -62,11 +65,12 @@ class Recorder
      * @param EntryAuthor|array $author
      * @param null $memo
      * @param null $ref
+     * @param Carbon|null $date
      * @return Recorder
      */
-    public function debit(Account $account, $amount, $author, $memo = null, $ref = null)
+    public function debit(Account $account, $amount, $author, $memo = null, $ref = null, ?Carbon $date = null)
     {
-        $this->addEntry($account, $amount, $author, Entry::TYPE_DEBIT, $memo, $ref);
+        $this->addEntry($account, $amount, $author, Entry::TYPE_DEBIT, $memo, $ref, $date);
 
         return $this;
     }
@@ -79,11 +83,12 @@ class Recorder
      * @param EntryAuthor|array $author
      * @param null $memo
      * @param null $ref
+     * @param Carbon|null $date
      * @return Recorder
      */
-    public function credit(Account $account, $amount, $author, $memo = null, $ref = null)
+    public function credit(Account $account, $amount, $author, $memo = null, $ref = null, ?Carbon $date = null)
     {
-        $this->addEntry($account, $amount, $author, Entry::TYPE_CREDIT, $memo, $ref);
+        $this->addEntry($account, $amount, $author, Entry::TYPE_CREDIT, $memo, $ref, $date);
 
         return $this;
     }

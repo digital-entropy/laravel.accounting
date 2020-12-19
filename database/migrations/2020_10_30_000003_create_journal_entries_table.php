@@ -23,6 +23,7 @@ class CreateJournalEntriesTable extends Migration
             $table->enum('type', [Entry::TYPE_CREDIT, Entry::TYPE_DEBIT]);
             $table->string('memo')->nullable();
             $table->string('ref')->nullable();
+            $table->dateTime('date');
             $table->softDeletes();
             $table->timestamps();
         });

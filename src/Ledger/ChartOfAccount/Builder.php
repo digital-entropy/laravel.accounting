@@ -75,14 +75,14 @@ class Builder
                 ->selectRaw('sum(amount)')
                 ->whereColumn('account_id', 'accounts.id')
                 ->where('type', Entry::TYPE_DEBIT)
-                ->whereDate('created_at', '>=', $this->period->start)
-                ->whereDate('created_at', '<=', $this->period->end),
+                ->whereDate('date', '>=', $this->period->start)
+                ->whereDate('date', '<=', $this->period->end),
             'credit' => $this->entry::query()
                 ->selectRaw('sum(amount)')
                 ->whereColumn('account_id', 'accounts.id')
                 ->where('type', Entry::TYPE_CREDIT)
-                ->whereDate('created_at', '>=', $this->period->start)
-                ->whereDate('created_at', '<=', $this->period->end)
+                ->whereDate('date', '>=', $this->period->start)
+                ->whereDate('date', '<=', $this->period->end)
         ]);
 
         return $this;
