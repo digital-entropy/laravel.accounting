@@ -42,7 +42,8 @@ class Entry extends Model implements \DigitalEntropy\Accounting\Contracts\Journa
         'type',
         'memo',
         'amount',
-        'ref'
+        'ref',
+        'date'
     ];
 
     /**
