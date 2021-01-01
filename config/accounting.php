@@ -37,6 +37,7 @@ return [
     // Standard accounting statements
     'statements' => [
         'balance_sheet' => [
+            'accumulated' => true,
             'name' => 'Balance Sheet',
             'cash_only' => false,
             'accounts' => ['1', '2', '3',]

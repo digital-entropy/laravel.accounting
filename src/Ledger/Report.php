@@ -44,11 +44,13 @@ class Report
 
         $statement = config('accounting.statements.' . $key);
         $types = Arr::only(config('accounting.account_types'), $statement['accounts']);
+        $accumulated = Arr::get($statement, 'accumulated', false);
 
         $this->builder
             ->period($period)
             ->withBalance()
             ->groupCode($groupCode)
+            ->accumulated($accumulated)
             ->accountTypeCode(Arr::flatten($types));
 
         if ($statement['cash_only']) {

@@ -28,6 +28,11 @@ class Builder
     public string $account;
 
     /**
+     * @var bool
+     */
+    public bool $accumulated;
+
+    /**
      * @var CarbonPeriod
      */
     private CarbonPeriod $period;
@@ -60,6 +65,19 @@ class Builder
     }
 
     /**
+     * Set accumulating period
+     *
+     * @param $accumulating
+     * @return Builder
+     */
+    public function accumulated($accumulating)
+    {
+       $this->accumulated = $accumulating;
+
+       return $this;
+    }
+
+    /**
      * Add balance into selected account
      *
      * @return $this
@@ -68,24 +86,35 @@ class Builder
     {
         $this->query
             ->whereHas('entries', function ($query) {
-                $query->whereDate('created_at', '>=', $this->period->start)
-                    ->whereDate('created_at', '<=', $this->period->end);
+                return $this->queryWithinPeriod($query);
             })->addSelect([
-            'debit' => $this->entry::query()
+            'debit' => $this->queryWithinPeriod($this->entry::query())
                 ->selectRaw('sum(amount)')
                 ->whereColumn('account_id', 'accounts.id')
-                ->where('type', Entry::TYPE_DEBIT)
-                ->whereDate('date', '>=', $this->period->start)
-                ->whereDate('date', '<=', $this->period->end),
-            'credit' => $this->entry::query()
+                ->where('type', Entry::TYPE_DEBIT),
+            'credit' => $this->queryWithinPeriod($this->entry::query())
                 ->selectRaw('sum(amount)')
                 ->whereColumn('account_id', 'accounts.id')
                 ->where('type', Entry::TYPE_CREDIT)
-                ->whereDate('date', '>=', $this->period->start)
-                ->whereDate('date', '<=', $this->period->end)
         ]);
 
         return $this;
+    }
+
+    /**
+     * Pick specific date.
+     *
+     * @param \Illuminate\Database\Query\Builder $builder
+     * @return \Illuminate\Database\Query\Builder
+     */
+    private function queryWithinPeriod(\Illuminate\Database\Query\Builder $builder) {
+        $builder->whereDate('date', '<=', $this->period->end);
+
+        if (! $this->accumulated) {
+            $builder->whereDate('date', '>=', $this->period->start);
+        }
+
+        return $builder;
     }
 
     /**
