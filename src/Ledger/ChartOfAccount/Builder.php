@@ -33,12 +33,20 @@ class Builder
     public bool $accumulated;
 
     /**
+     * @var bool
+     */
+    public bool $withBalance;
+
+    /**
      * @var CarbonPeriod
      */
     private CarbonPeriod $period;
 
     public function __construct()
     {
+        $this->accumulated = false;
+        $this->withBalance = false;
+
         $defaultStartDate = Carbon::now()->startOfMonth()->toDateString();
         $defaultEndDate = Carbon::now()->endOfMonth()->toDateString();
         $this->period = CarbonPeriod::create($defaultStartDate, $defaultEndDate);
@@ -53,28 +61,18 @@ class Builder
      * Set period
      *
      * @param CarbonPeriod|null $period
+     * @param bool $accumulated
      * @return Builder
      */
-    public function period(?CarbonPeriod $period)
+    public function period(?CarbonPeriod $period, $accumulated = false)
     {
         if (! is_null($period)) {
             $this->period = $period;
         }
 
+        $this->accumulated = $accumulated;
+
         return $this;
-    }
-
-    /**
-     * Set accumulating period
-     *
-     * @param $accumulating
-     * @return Builder
-     */
-    public function accumulated($accumulating)
-    {
-       $this->accumulated = $accumulating;
-
-       return $this;
     }
 
     /**
@@ -84,19 +82,7 @@ class Builder
      */
     public function withBalance()
     {
-        $this->query
-            ->whereHas('entries', function ($query) {
-                return $this->queryWithinPeriod($query);
-            })->addSelect([
-            'debit' => $this->queryWithinPeriod($this->entry::query())
-                ->selectRaw('sum(amount)')
-                ->whereColumn('account_id', 'accounts.id')
-                ->where('type', Entry::TYPE_DEBIT),
-            'credit' => $this->queryWithinPeriod($this->entry::query())
-                ->selectRaw('sum(amount)')
-                ->whereColumn('account_id', 'accounts.id')
-                ->where('type', Entry::TYPE_CREDIT)
-        ]);
+        $this->withBalance = true;
 
         return $this;
     }
@@ -104,10 +90,10 @@ class Builder
     /**
      * Pick specific date.
      *
-     * @param \Illuminate\Database\Query\Builder $builder
-     * @return \Illuminate\Database\Query\Builder
+     * @param EloquentBuilder $builder
+     * @return EloquentBuilder
      */
-    private function queryWithinPeriod(\Illuminate\Database\Query\Builder $builder) {
+    private function queryWithinPeriod(\Illuminate\Database\Eloquent\Builder $builder) {
         $builder->whereDate('date', '<=', $this->period->end);
 
         if (! $this->accumulated) {
@@ -173,12 +159,40 @@ class Builder
     }
 
     /**
+     * Build query
+     *
+     * @return $this
+     */
+    private function buildWithBalance()
+    {
+        $this->query
+            ->whereHas('entries', function ($query) {
+                return $this->queryWithinPeriod($query);
+            })->addSelect([
+                'debit' => $this->queryWithinPeriod($this->entry::query())
+                    ->selectRaw('sum(amount)')
+                    ->whereColumn('account_id', 'accounts.id')
+                    ->where('type', Entry::TYPE_DEBIT),
+                'credit' => $this->queryWithinPeriod($this->entry::query())
+                    ->selectRaw('sum(amount)')
+                    ->whereColumn('account_id', 'accounts.id')
+                    ->where('type', Entry::TYPE_CREDIT)
+            ]);
+
+        return $this;
+    }
+
+    /**
      * Return collection of account
      *
      * @return Collection
      */
     public function get(): Collection
     {
+        if ($this->withBalance) {
+            $this->buildWithBalance();
+        }
+
         return $this->query->get();
     }
 
@@ -189,6 +203,10 @@ class Builder
      */
     public function getQuery()
     {
+        if ($this->withBalance) {
+            $this->buildWithBalance();
+        }
+
         return $this->query;
     }
 }

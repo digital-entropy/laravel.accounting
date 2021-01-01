@@ -47,10 +47,9 @@ class Report
         $accumulated = Arr::get($statement, 'accumulated', false);
 
         $this->builder
-            ->period($period)
+            ->period($period, $accumulated)
             ->withBalance()
             ->groupCode($groupCode)
-            ->accumulated($accumulated)
             ->accountTypeCode(Arr::flatten($types));
 
         if ($statement['cash_only']) {
