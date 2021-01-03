@@ -67,6 +67,10 @@ class Report
             $credit += $account->getCredit();
         }
 
+        // unset unnecessary attribute
+        unset($statement['accounts']);
+        unset($statement['cash_only']);
+
         return array_merge($statement, [
             'name' => $statement['name'],
             'debit' => $debit,
