@@ -59,7 +59,7 @@ class Journal extends Model implements \DigitalEntropy\Accounting\Contracts\Jour
      */
     public function entries(): HasMany
     {
-        return $this->hasMany(Journal\Entry::class);
+        return $this->hasMany(config('accounting.models.entry'));
     }
 
     /**

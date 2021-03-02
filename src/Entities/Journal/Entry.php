@@ -53,7 +53,7 @@ class Entry extends Model implements \DigitalEntropy\Accounting\Contracts\Journa
      */
     public function account(): BelongsTo
     {
-        return $this->belongsTo(Account::class, 'account_id', 'id');
+        return $this->belongsTo(config('accounting.models.account'), 'account_id', 'id');
     }
 
     /**
@@ -63,7 +63,7 @@ class Entry extends Model implements \DigitalEntropy\Accounting\Contracts\Journa
      */
     public function journal(): BelongsTo
     {
-        return $this->belongsTo(Journal::class, 'journal_id', 'id');
+        return $this->belongsTo(config('accounting.models.journal'), 'journal_id', 'id');
     }
 
     /**

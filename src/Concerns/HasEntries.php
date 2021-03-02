@@ -27,7 +27,7 @@ trait HasEntries
      * @param $entry
      * @return \Illuminate\Database\Eloquent\Model
      */
-    function createEntry(Journal $journal, $entry)
+    function createEntry(Journal $journal, $entry): \Illuminate\Database\Eloquent\Model
     {
         return $journal->entries()->create($entry);
     }

@@ -15,7 +15,7 @@ trait HasJournals
      *
      * @return MorphMany
      */
-    public function journals()
+    public function journals(): MorphMany
     {
         return $this->morphMany(config('accounting.models.journal'), 'recordable');
     }
@@ -27,7 +27,7 @@ trait HasJournals
      * @param string|null $refId
      * @return Model
      */
-    public function createJournal(?string $memo, ?string $refId)
+    public function createJournal(?string $memo, ?string $refId): Model
     {
         return $this->journals()->create([
             'memo' => $memo,
