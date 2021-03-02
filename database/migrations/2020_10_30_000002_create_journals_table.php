@@ -15,6 +15,7 @@ class CreateJournalsTable extends Migration
     {
         Schema::create('journals', function (Blueprint $table) {
             $table->id();
+            $table->string('group_code')->nullable();
             $table->unsignedBigInteger('amount')->default(0);
             $table->string('memo')->nullable();
             $table->string('ref')->nullable();

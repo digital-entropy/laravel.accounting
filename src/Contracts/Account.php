@@ -78,4 +78,11 @@ interface Account
      */
     public function entries(): HasMany;
 
+    /**
+     * Get account group code.
+     *
+     * @return string
+     */
+    public function getGroupCode(): string;
+
 }

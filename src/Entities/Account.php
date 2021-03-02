@@ -94,6 +94,16 @@ class Account extends Model implements \DigitalEntropy\Accounting\Contracts\Acco
     }
 
     /**
+     * Get account group code.
+     *
+     * @return string
+     */
+    public function getGroupCode(): string
+    {
+        return $this->attributes['group_code'];
+    }
+
+    /**
      * Get debit balance.
      *
      * @return int

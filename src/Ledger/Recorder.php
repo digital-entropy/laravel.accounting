@@ -42,7 +42,7 @@ class Recorder
      * @param Carbon|null $date
      * @return $this
      */
-    private function addEntry(Account $account, int $amount, $author, string $type, $memo = null, $ref = null, ?Carbon $date = null)
+    private function addEntry(Account $account, int $amount, $author, string $type, $memo = null, $ref = null, ?Carbon $date = null): Recorder
     {
         $this->entries[] = collect([
             'account' => $account,
@@ -68,7 +68,7 @@ class Recorder
      * @param Carbon|null $date
      * @return Recorder
      */
-    public function debit(Account $account, $amount, $author, $memo = null, $ref = null, ?Carbon $date = null)
+    public function debit(Account $account, $amount, $author, $memo = null, $ref = null, ?Carbon $date = null): Recorder
     {
         $this->addEntry($account, $amount, $author, Entry::TYPE_DEBIT, $memo, $ref, $date);
 
@@ -86,7 +86,7 @@ class Recorder
      * @param Carbon|null $date
      * @return Recorder
      */
-    public function credit(Account $account, $amount, $author, $memo = null, $ref = null, ?Carbon $date = null)
+    public function credit(Account $account, $amount, $author, $memo = null, $ref = null, ?Carbon $date = null): Recorder
     {
         $this->addEntry($account, $amount, $author, Entry::TYPE_CREDIT, $memo, $ref, $date);
 
@@ -99,11 +99,12 @@ class Recorder
      * @param Recordable|array|null $recordable
      * @param string|null $memo
      * @param string|null $ref
+     * @param string|null $groupCode
      * @param bool $strict
      * @return Journal|null
      * @throws NotBalanceJournalEntryException
      */
-    public function record($recordable, ?string $memo = null, ?string $ref = null, $strict = true)
+    public function record($recordable, ?string $memo = null, ?string $ref = null, ?string $groupCode = null, $strict = true)
     {
         $debitBalance = 0;
         $creditBalance = 0;
@@ -130,7 +131,8 @@ class Recorder
         $journal->fill([
             'amount' => intval(abs($debitBalance)),
             'memo' => $memo,
-            'ref' => $ref
+            'ref' => $ref,
+            'group_code' => $groupCode
         ]);
 
         if (! is_null($recordable)) {

@@ -27,6 +27,7 @@ class Journal extends Model implements \DigitalEntropy\Accounting\Contracts\Jour
     protected $fillable = [
         'recordable_id',
         'recordable_type',
+        'group_code',
         'amount',
         'memo',
         'ref'
