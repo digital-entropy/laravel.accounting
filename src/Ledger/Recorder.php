@@ -10,8 +10,10 @@ use DigitalEntropy\Accounting\Contracts\EntryAuthor;
 use DigitalEntropy\Accounting\Contracts\Journal;
 use DigitalEntropy\Accounting\Contracts\Journal\Entry;
 use DigitalEntropy\Accounting\Contracts\Recordable;
+use DigitalEntropy\Accounting\Entities\Journal\Entry as EntryModel;
 use DigitalEntropy\Accounting\Exceptions\NotBalanceJournalEntryException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class Recorder
@@ -101,10 +103,75 @@ class Recorder
      * @param string|null $ref
      * @param string|null $groupCode
      * @param bool $strict
-     * @return Journal|null
+     * @return Journal
      * @throws NotBalanceJournalEntryException
      */
-    public function record($recordable, ?string $memo = null, ?string $ref = null, ?string $groupCode = null, $strict = true)
+    public function record($recordable, ?string $memo = null, ?string $ref = null, ?string $groupCode = null, $strict = true): Journal
+    {
+        list($debitBalance) = $this->sumEntries($strict);
+
+        $journal = $this->saveJournal(null, [
+            'amount' => intval(abs($debitBalance)),
+            'memo' => $memo,
+            'ref' => $ref,
+            'group_code' => $groupCode
+        ], $recordable);
+
+        $this->saveEntries($journal);
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $journal->load(['entries']);
+
+        return $journal;
+    }
+
+    /**
+     * @param Journal $journal
+     * @param Recordable|array|null $recordable
+     * @param string|null $memo
+     * @param string|null $ref
+     * @param string|null $groupCode
+     * @param bool $strict
+     * @return Journal
+     * @throws NotBalanceJournalEntryException
+     */
+    public function updateRecord(Journal $journal, $recordable, ?string $memo = null, ?string $ref = null, ?string $groupCode = null, $strict = true): Journal
+    {
+        list($debitBalance) = $this->sumEntries($strict);
+
+        $entries = collect($this->entries);
+
+        $ids = $entries->filter(fn ($item) => Arr::get($item, 'id') !== null)->pluck('id');
+
+        // Delete entry if they didn't mentioned.
+        $toBeDeletedEntries = $journal->entries()->whereNotIn('id', $ids);
+
+        /** @var EntryModel $entry */
+        foreach ($toBeDeletedEntries->get() as $entry) {
+            $entry->forceDelete();
+        }
+
+        $journal = $this->saveJournal($journal, [
+            'amount' => intval(abs($debitBalance)),
+            'memo' => $memo,
+            'ref' => $ref,
+            'group_code' => $groupCode
+        ], $recordable);
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $journal->load(['entries']);
+
+        return $journal;
+    }
+
+    /**
+     * Sum journal entries
+     *
+     * @param $strict
+     * @return array
+     * @throws NotBalanceJournalEntryException
+     */
+    private function sumEntries($strict): array
     {
         $debitBalance = 0;
         $creditBalance = 0;
@@ -124,28 +191,15 @@ class Recorder
             throw new NotBalanceJournalEntryException($balance, $debitBalance, $creditBalance);
         }
 
-        $journalClass = config('accounting.models.journal');
+        return [
+            $debitBalance,
+            $creditBalance,
+            $balance
+        ];
+    }
 
-        /** @var Journal|Model $journal */
-        $journal = new $journalClass();
-        $journal->fill([
-            'amount' => intval(abs($debitBalance)),
-            'memo' => $memo,
-            'ref' => $ref,
-            'group_code' => $groupCode
-        ]);
-
-        if (! is_null($recordable)) {
-            if ($recordable instanceof Model) {
-                $journal->recordable()->associate($recordable);
-            } else {
-                $journal->setAttribute('recordable_id', $recordable['recordable_id']);
-                $journal->setAttribute('recordable_type', $recordable['recordable_type']);
-            }
-        }
-
-        $journal->save();
-
+    private function saveEntries(Journal $journal)
+    {
         /** @var Collection $entryAttributes */
         foreach ($this->entries as $entryAttributes) {
 
@@ -167,8 +221,29 @@ class Recorder
 
             $entry->save();
         }
+    }
 
-        $journal->load(['entries']);
+    public function saveJournal(?Journal $journal, array $attributes, $recordable = null): Journal
+    {
+        if (is_null($journal)) {
+            $journalClass = config('accounting.models.journal');
+
+            /** @var Journal|Model $journal */
+            $journal = new $journalClass();
+        }
+
+        $journal->fill($attributes);
+
+        if (! is_null($recordable)) {
+            if ($recordable instanceof Model) {
+                $journal->recordable()->associate($recordable);
+            } else {
+                $journal->setAttribute('recordable_id', $recordable['recordable_id']);
+                $journal->setAttribute('recordable_type', $recordable['recordable_type']);
+            }
+        }
+
+        $journal->save();
 
         return $journal;
     }
