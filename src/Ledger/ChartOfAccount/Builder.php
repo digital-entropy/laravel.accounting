@@ -80,18 +80,6 @@ class Builder
      *
      * @return $this
      */
-    public function withJournals(): Builder
-    {
-        $this->query->with('journals');
-
-        return $this;
-    }
-
-    /**
-     * Add balance into selected account
-     *
-     * @return $this
-     */
     public function appendBalance(): Builder
     {
         $this->appendBalance = true;

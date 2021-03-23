@@ -50,7 +50,6 @@ return [
         'cash_flow' => [
             'name' => 'Cash Flow',
             'cash_only' => true,
-            'with_journals' => true,
             'accounts' => ['1']
         ]
     ]

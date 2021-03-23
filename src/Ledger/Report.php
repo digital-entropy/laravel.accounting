@@ -55,10 +55,6 @@ class Report
             $this->builder->cash($statement["cash_only"]);
         }
 
-        if (Arr::get($statement, 'with_journals')) {
-            $this->builder->withJournals();
-        }
-
         $accountByTypes = $this->builder->groupByAccountTypeCode();
 
         $debit = 0;
