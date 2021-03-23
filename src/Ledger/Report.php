@@ -73,7 +73,7 @@ class Report
 
         return array_merge($statement, [
             'name' => $statement['name'],
-            'total' => $debit - $credit,
+            'total' => abs($debit - $credit),
             'result' => $accountByTypes
         ]);
     }
