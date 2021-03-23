@@ -33,6 +33,10 @@ class Journal extends Model implements \DigitalEntropy\Accounting\Contracts\Jour
         'ref'
     ];
 
+    protected $casts = [
+        'amount' => 'float'
+    ];
+
     /**
      * Journal unique identifier.
      *

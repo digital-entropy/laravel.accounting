@@ -5,7 +5,6 @@ namespace DigitalEntropy\Accounting\Ledger;
 
 
 use Carbon\CarbonPeriod;
-use DigitalEntropy\Accounting\Contracts\Account;
 use DigitalEntropy\Accounting\Exceptions\StatementNotFoundException;
 use DigitalEntropy\Accounting\Ledger\ChartOfAccount\Builder;
 use Illuminate\Support\Arr;
@@ -36,7 +35,7 @@ class Report
      * @return array
      * @throws StatementNotFoundException
      */
-    public function getStatement($key, string $groupCode = null, ?CarbonPeriod $period = null)
+    public function getStatement($key, string $groupCode = null, ?CarbonPeriod $period = null): array
     {
         if (! array_key_exists($key, config('accounting.statements'))) {
             throw new StatementNotFoundException($key);
@@ -48,7 +47,7 @@ class Report
 
         $this->builder
             ->period($period, $accumulated)
-            ->withBalance()
+            ->appendBalance()
             ->groupCode($groupCode)
             ->accountTypeCode(Arr::flatten($types));
 
@@ -56,15 +55,20 @@ class Report
             $this->builder->cash($statement["cash_only"]);
         }
 
-        $accounts = $this->builder->get();
+        if (Arr::get($statement, 'with_journals')) {
+            $this->builder->withJournals();
+        }
+
+        $accountByTypes = $this->builder->groupByAccountTypeCode();
 
         $debit = 0;
         $credit = 0;
 
-        /** @var Account $account */
-        foreach ($accounts as $account) {
-            $debit += $account->getDebit();
-            $credit += $account->getCredit();
+        foreach ($accountByTypes as $key => $value) {
+            foreach ($value as $account) {
+                $debit += $account->getDebit();
+                $credit += $account->getCredit();
+            }
         }
 
         // unset unnecessary attribute
@@ -73,10 +77,8 @@ class Report
 
         return array_merge($statement, [
             'name' => $statement['name'],
-            'debit' => $debit,
-            'credit' => $credit,
             'total' => $debit - $credit,
-            'result' => $accounts
+            'result' => $accountByTypes
         ]);
     }
 
@@ -87,7 +89,7 @@ class Report
      * @return array
      * @throws StatementNotFoundException
      */
-    public function getFinancialStatements(?CarbonPeriod $period = null)
+    public function getFinancialStatements(?CarbonPeriod $period = null): array
     {
         $statements = [];
 

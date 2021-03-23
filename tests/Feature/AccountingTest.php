@@ -112,6 +112,11 @@ class AccountingTest extends TestCase
         ];
     }
 
+    /**
+     * @throws \DigitalEntropy\Accounting\Exceptions\NotBalanceJournalEntryException
+     * @throws \DigitalEntropy\Accounting\Exceptions\StatementNotFoundException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
     public function testBalancedEntry()
     {
         $accountClass = config('accounting.models.account');
@@ -168,7 +173,7 @@ class AccountingTest extends TestCase
 
         $balanceSheet = $report->getStatement("balance_sheet");
 
-        $this->assertEquals($balanceSheet['debit'], $balanceSheet['credit']);
+        $this->assertEquals(0, $balanceSheet['total']);
 
         // Post into ledger.
 

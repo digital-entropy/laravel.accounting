@@ -35,7 +35,7 @@ class Builder
     /**
      * @var bool
      */
-    public bool $withBalance;
+    public bool $appendBalance;
 
     /**
      * @var CarbonPeriod
@@ -45,7 +45,7 @@ class Builder
     public function __construct()
     {
         $this->accumulated = false;
-        $this->withBalance = false;
+        $this->appendBalance = false;
 
         $defaultStartDate = Carbon::now()->startOfMonth()->toDateString();
         $defaultEndDate = Carbon::now()->endOfMonth()->toDateString();
@@ -64,7 +64,7 @@ class Builder
      * @param bool $accumulated
      * @return Builder
      */
-    public function period(?CarbonPeriod $period, $accumulated = false)
+    public function period(?CarbonPeriod $period, $accumulated = false): Builder
     {
         if (! is_null($period)) {
             $this->period = $period;
@@ -80,9 +80,21 @@ class Builder
      *
      * @return $this
      */
-    public function withBalance()
+    public function withJournals(): Builder
     {
-        $this->withBalance = true;
+        $this->query->with('journals');
+
+        return $this;
+    }
+
+    /**
+     * Add balance into selected account
+     *
+     * @return $this
+     */
+    public function appendBalance(): Builder
+    {
+        $this->appendBalance = true;
 
         return $this;
     }
@@ -93,7 +105,8 @@ class Builder
      * @param EloquentBuilder $builder
      * @return EloquentBuilder
      */
-    private function queryWithinPeriod(\Illuminate\Database\Eloquent\Builder $builder) {
+    private function queryWithinPeriod(\Illuminate\Database\Eloquent\Builder $builder): EloquentBuilder
+    {
         $builder->whereDate('date', '<=', $this->period->end);
 
         if (! $this->accumulated) {
@@ -109,7 +122,7 @@ class Builder
      * @param bool $cashOnly
      * @return $this
      */
-    public function cash(bool $cashOnly = true)
+    public function cash(bool $cashOnly = true): Builder
     {
         $this->query->where('is_cash', $cashOnly);
 
@@ -122,7 +135,7 @@ class Builder
      * @param string|null $code
      * @return $this
      */
-    public function groupCode(?string $code)
+    public function groupCode(?string $code): Builder
     {
         if (! is_null($code)) {
             $this->query->where('group_code', $code);
@@ -137,7 +150,7 @@ class Builder
      * @param mixed ...$types
      * @return $this
      */
-    public function accountTypeCode(...$types)
+    public function accountTypeCode(...$types): Builder
     {
         if (is_array($types[0])) {
             $this->query->whereIn('type_code', $types[0]);
@@ -163,7 +176,7 @@ class Builder
      *
      * @return $this
      */
-    private function buildWithBalance()
+    private function buildWithBalance(): Builder
     {
         $this->query
             ->whereHas('entries', function ($query) {
@@ -189,11 +202,13 @@ class Builder
      */
     public function get(): Collection
     {
-        if ($this->withBalance) {
+        if (! $this->appendBalance) {
+            return $this->query->get()->makeHidden('balance');
+        } else {
             $this->buildWithBalance();
         }
 
-        return $this->query->get();
+        return $this->query->get()->filter(fn ($account) => $account->balance > 0);
     }
 
     /**
@@ -201,9 +216,9 @@ class Builder
      *
      * @return EloquentBuilder
      */
-    public function getQuery()
+    public function getQuery(): EloquentBuilder
     {
-        if ($this->withBalance) {
+        if ($this->appendBalance) {
             $this->buildWithBalance();
         }
 

@@ -26,7 +26,7 @@ class Poster
     /**
      * @var EloquentBuilder
      */
-    private $query;
+    private EloquentBuilder $query;
 
     /**
      * Poster constructor.
@@ -62,14 +62,13 @@ class Poster
      *
      * @return $this
      */
-    public function post()
+    public function post(): Poster
     {
         $accounts = $this->builder
-            ->withBalance()
+            ->appendBalance()
             ->period($this->period)
             ->get();
 
-        /** @var Model|Account $account */
         foreach ($accounts as $account) {
             $this->apply($account)->toArray();
         }
@@ -81,9 +80,9 @@ class Poster
      * Save into database.
      *
      * @param $account
-     * @return EloquentBuilder|Model
+     * @return Model
      */
-    private function apply($account)
+    private function apply($account): Model
     {
         return $this->query->updateOrCreate([
             'account_id' => $account->id,

@@ -40,7 +40,7 @@ return [
             'accumulated' => true,
             'name' => 'Balance Sheet',
             'cash_only' => false,
-            'accounts' => ['1', '2', '3',]
+            'accounts' => ['1', '2', '3', '4', '5']
         ],
         'income' => [
             'name' => 'Income',
@@ -50,7 +50,8 @@ return [
         'cash_flow' => [
             'name' => 'Cash Flow',
             'cash_only' => true,
-            'accounts' => ['1', '2', '3', '4', '5', '6']
+            'with_journals' => true,
+            'accounts' => ['1']
         ]
     ]
 ];

@@ -34,6 +34,20 @@ class Account extends Model implements \DigitalEntropy\Accounting\Contracts\Acco
     ];
 
     /**
+     * @var string[]
+     */
+    protected $appends = [
+        'balance'
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $hidden = [
+//        'debit', 'credit'
+    ];
+
+    /**
      * Unique identifier for account.
      *
      * @return string
@@ -126,9 +140,9 @@ class Account extends Model implements \DigitalEntropy\Accounting\Contracts\Acco
     /**
      * Get balance custom accessor.
      *
-     * @return float|int
+     * @return int
      */
-    public function getBalanceAttribute()
+    public function getBalanceAttribute(): int
     {
         return abs($this->getDebit() - $this->getCredit());
     }
@@ -138,7 +152,7 @@ class Account extends Model implements \DigitalEntropy\Accounting\Contracts\Acco
      *
      * @return string
      */
-    public function getHandSideAttribute()
+    public function getHandSideAttribute(): string
     {
         return $this->leftHandSide() ? "left" : "right";
     }
@@ -148,7 +162,7 @@ class Account extends Model implements \DigitalEntropy\Accounting\Contracts\Acco
      *
      * @return bool
      */
-    public function leftHandSide()
+    public function leftHandSide(): bool
     {
         $types = array_flip(config('accounting.account_types'));
         $currentAccountType = $types[$this->getAccountTypeCode()];
@@ -161,7 +175,7 @@ class Account extends Model implements \DigitalEntropy\Accounting\Contracts\Acco
      *
      * @return bool
      */
-    public function rightHandSide()
+    public function rightHandSide(): bool
     {
         $types = array_flip(config('accounting.account_types'));
         $currentAccountType = $types[$this->getAccountTypeCode()];
