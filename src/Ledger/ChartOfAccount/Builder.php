@@ -38,6 +38,11 @@ class Builder
     public bool $appendBalance;
 
     /**
+     * @var string|null
+     */
+    public ?string $groupCode;
+
+    /**
      * @var CarbonPeriod
      */
     private CarbonPeriod $period;
@@ -125,9 +130,7 @@ class Builder
      */
     public function groupCode(?string $code): Builder
     {
-        if (! is_null($code)) {
-            $this->query->where('group_code', $code);
-        }
+        $this->groupCode = $code;
 
         return $this;
     }
@@ -172,11 +175,15 @@ class Builder
             })->addSelect([
                 'debit' => $this->queryWithinPeriod($this->entry::query())
                     ->selectRaw('sum(amount)')
-                    ->whereColumn('account_id', 'accounts.id')
+                    ->whereHas('journal', function ($builder) {
+                        $builder->where('group_code', $this->groupCode);
+                    })->whereColumn('account_id', 'accounts.id')
                     ->where('type', Entry::TYPE_DEBIT),
                 'credit' => $this->queryWithinPeriod($this->entry::query())
                     ->selectRaw('sum(amount)')
-                    ->whereColumn('account_id', 'accounts.id')
+                    ->whereHas('journal', function ($builder) {
+                        $builder->where('group_code', $this->groupCode);
+                    })->whereColumn('account_id', 'accounts.id')
                     ->where('type', Entry::TYPE_CREDIT)
             ]);
 
