@@ -176,13 +176,17 @@ class Builder
                 'debit' => $this->queryWithinPeriod($this->entry::query())
                     ->selectRaw('sum(amount)')
                     ->whereHas('journal', function ($builder) {
-                        $builder->where('group_code', $this->groupCode);
+                        if (! is_null($this->groupCode)) {
+                            $builder->where('group_code', $this->groupCode);
+                        }
                     })->whereColumn('account_id', 'accounts.id')
                     ->where('type', Entry::TYPE_DEBIT),
                 'credit' => $this->queryWithinPeriod($this->entry::query())
                     ->selectRaw('sum(amount)')
                     ->whereHas('journal', function ($builder) {
-                        $builder->where('group_code', $this->groupCode);
+                        if (! is_null($this->groupCode)) {
+                            $builder->where('group_code', $this->groupCode);
+                        }
                     })->whereColumn('account_id', 'accounts.id')
                     ->where('type', Entry::TYPE_CREDIT)
             ]);
