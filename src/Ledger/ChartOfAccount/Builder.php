@@ -51,6 +51,7 @@ class Builder
     {
         $this->accumulated = false;
         $this->appendBalance = false;
+        $this->groupCode = null;
 
         $defaultStartDate = Carbon::now()->startOfMonth()->toDateString();
         $defaultEndDate = Carbon::now()->endOfMonth()->toDateString();
