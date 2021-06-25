@@ -1,22 +1,18 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Tests\Feature;
+namespace Dentro\Accounting\Tests\Feature;
 
-
-use Carbon\Carbon;
-use DigitalEntropy\Accounting\Contracts\Account;
-use DigitalEntropy\Accounting\Contracts\EntryAuthor;
-use DigitalEntropy\Accounting\Contracts\Journal\Entry;
-use DigitalEntropy\Accounting\Contracts\Recordable;
-use DigitalEntropy\Accounting\Ledger\Poster;
-use DigitalEntropy\Accounting\Ledger\Recorder;
-use DigitalEntropy\Accounting\Ledger\Report;
-use DigitalEntropy\Accounting\Tests\TestCase;
+use Dentro\Accounting\Contracts\Account;
+use Dentro\Accounting\Contracts\EntryAuthor;
+use Dentro\Accounting\Contracts\Recordable;
+use Dentro\Accounting\Ledger\Poster;
+use Dentro\Accounting\Ledger\Recorder;
+use Dentro\Accounting\Ledger\Report;
+use Dentro\Accounting\Tests\TestCase;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\DB;
 
 class AccountingTest extends TestCase
 {
@@ -113,8 +109,8 @@ class AccountingTest extends TestCase
     }
 
     /**
-     * @throws \DigitalEntropy\Accounting\Exceptions\NotBalanceJournalEntryException
-     * @throws \DigitalEntropy\Accounting\Exceptions\StatementNotFoundException
+     * @throws \Dentro\Accounting\Exceptions\NotBalanceJournalEntryException
+     * @throws \Dentro\Accounting\Exceptions\StatementNotFoundException
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function testBalancedEntry()

@@ -1,11 +1,11 @@
 <?php
 
-namespace DigitalEntropy\Accounting;
+namespace Dentro\Accounting;
 
-use DigitalEntropy\Accounting\Ledger\ChartOfAccount\Builder;
-use DigitalEntropy\Accounting\Ledger\Poster;
-use DigitalEntropy\Accounting\Ledger\Recorder;
-use DigitalEntropy\Accounting\Ledger\Report;
+use Dentro\Accounting\Ledger\ChartOfAccount\Builder;
+use Dentro\Accounting\Ledger\Poster;
+use Dentro\Accounting\Ledger\Recorder;
+use Dentro\Accounting\Ledger\Report;
 use Illuminate\Support\ServiceProvider;
 
 class AccountingServiceProvider extends ServiceProvider

@@ -1,17 +1,17 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Ledger;
+namespace Dentro\Accounting\Ledger;
 
 
 use Carbon\Carbon;
-use DigitalEntropy\Accounting\Contracts\Account;
-use DigitalEntropy\Accounting\Contracts\EntryAuthor;
-use DigitalEntropy\Accounting\Contracts\Journal;
-use DigitalEntropy\Accounting\Contracts\Journal\Entry;
-use DigitalEntropy\Accounting\Contracts\Recordable;
-use DigitalEntropy\Accounting\Entities\Journal\Entry as EntryModel;
-use DigitalEntropy\Accounting\Exceptions\NotBalanceJournalEntryException;
+use Dentro\Accounting\Contracts\Account;
+use Dentro\Accounting\Contracts\EntryAuthor;
+use Dentro\Accounting\Contracts\Journal;
+use Dentro\Accounting\Contracts\Journal\Entry;
+use Dentro\Accounting\Contracts\Recordable;
+use Dentro\Accounting\Entities\Journal\Entry as EntryModel;
+use Dentro\Accounting\Exceptions\NotBalanceJournalEntryException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;

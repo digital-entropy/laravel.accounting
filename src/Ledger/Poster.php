@@ -1,13 +1,12 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Ledger;
+namespace Dentro\Accounting\Ledger;
 
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use DigitalEntropy\Accounting\Contracts\Account;
-use DigitalEntropy\Accounting\Ledger\ChartOfAccount\Builder;
+use Dentro\Accounting\Ledger\ChartOfAccount\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 

@@ -1,10 +1,11 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Concerns;
+namespace Dentro\Accounting\Concerns;
 
 
-use DigitalEntropy\Accounting\Contracts\Journal;
+use Dentro\Accounting\Contracts\Journal;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasEntries
@@ -25,9 +26,9 @@ trait HasEntries
      *
      * @param Journal $journal
      * @param $entry
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return Model
      */
-    function createEntry(Journal $journal, $entry): \Illuminate\Database\Eloquent\Model
+    function createEntry(Journal $journal, $entry): Model
     {
         return $journal->entries()->create($entry);
     }

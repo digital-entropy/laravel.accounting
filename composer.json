@@ -1,5 +1,5 @@
 {
-    "name": "digitalentropy/laravel-accounting",
+    "name": "dentro/laravel-accounting",
     "description": "Implementation for Double-Entry Accounting for laravel.",
     "keywords": [
         "laravel",
@@ -22,29 +22,40 @@
     },
     "require-dev": {
         "orchestra/testbench": "^6.4",
-        "phpunit/phpunit": "^9.4"
+        "phpunit/phpunit": "^9.4",
+        "roave/security-advisories": "dev-latest"
     },
     "autoload": {
         "psr-4": {
-            "DigitalEntropy\\Accounting\\": "src"
+            "Dentro\\Accounting\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "DigitalEntropy\\Accounting\\Tests\\": "tests"
+            "Dentro\\Accounting\\Tests\\": "tests"
         }
     },
     "config": {
         "sort-packages": true
     },
+    "scripts": {
+        "test": "vendor/bin/phpunit --colors=always",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "post-autoload-dump": [
+            "@php ./vendor/bin/testbench package:discover --ansi"
+        ]
+    },
     "extra": {
         "laravel": {
             "providers": [
-                "DigitalEntropy\\Accounting\\AccountingServiceProvider"
+                "Dentro\\Accounting\\AccountingServiceProvider"
             ],
             "aliases": {
 
             }
+        },
+        "branch-alias": {
+            "dev-master": "1.0-dev"
         }
     }
 }

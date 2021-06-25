@@ -1,11 +1,7 @@
 <?php
 
+namespace Dentro\Accounting\Entities\Journal;
 
-namespace DigitalEntropy\Accounting\Entities\Journal;
-
-
-use DigitalEntropy\Accounting\Entities\Account;
-use DigitalEntropy\Accounting\Entities\Journal;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -14,11 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class Entry
  *
- * @package DigitalEntropy\AccountingManager\Entities
+ * @package Dentro\AccountingManager\Entities
  * @property int amount
  * @property string type
  */
-class Entry extends Model implements \DigitalEntropy\Accounting\Contracts\Journal\Entry
+class Entry extends Model implements \Dentro\Accounting\Contracts\Journal\Entry
 {
     use SoftDeletes;
 

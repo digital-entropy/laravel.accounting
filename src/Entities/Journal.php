@@ -1,7 +1,7 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Entities;
+namespace Dentro\Accounting\Entities;
 
 
 use Illuminate\Database\Eloquent\Model;
@@ -12,10 +12,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class Journal
  *
- * @package DigitalEntropy\AccountingManager\Entities
+ * @package Dentro\AccountingManager\Entities
  * @property int id
  */
-class Journal extends Model implements \DigitalEntropy\Accounting\Contracts\Journal
+class Journal extends Model implements \Dentro\Accounting\Contracts\Journal
 {
     use SoftDeletes;
 

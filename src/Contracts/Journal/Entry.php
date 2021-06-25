@@ -1,7 +1,7 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Contracts\Journal;
+namespace Dentro\Accounting\Contracts\Journal;
 
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

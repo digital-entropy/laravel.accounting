@@ -1,6 +1,6 @@
 <?php
 
-use DigitalEntropy\Accounting\Contracts\Account;
+use Dentro\Accounting\Contracts\Account;
 
 return [
     // separators x-xxx.xx
@@ -19,10 +19,10 @@ return [
 
     // Default model
     'models' => [
-        'journal' => \DigitalEntropy\Accounting\Entities\Journal::class,
-        'entry' => \DigitalEntropy\Accounting\Entities\Journal\Entry::class,
-        'account' => \DigitalEntropy\Accounting\Entities\Account::class,
-        'general_ledger' => \DigitalEntropy\Accounting\Entities\GeneralLedger::class,
+        'journal' => \Dentro\Accounting\Entities\Journal::class,
+        'entry' => \Dentro\Accounting\Entities\Journal\Entry::class,
+        'account' => \Dentro\Accounting\Entities\Account::class,
+        'general_ledger' => \Dentro\Accounting\Entities\GeneralLedger::class,
     ],
 
     // Standard equation of accounting system

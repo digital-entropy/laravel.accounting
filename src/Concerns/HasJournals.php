@@ -1,7 +1,7 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Concerns;
+namespace Dentro\Accounting\Concerns;
 
 
 use Illuminate\Database\Eloquent\Model;

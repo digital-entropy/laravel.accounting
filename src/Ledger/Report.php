@@ -1,12 +1,12 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Ledger;
+namespace Dentro\Accounting\Ledger;
 
 
 use Carbon\CarbonPeriod;
-use DigitalEntropy\Accounting\Exceptions\StatementNotFoundException;
-use DigitalEntropy\Accounting\Ledger\ChartOfAccount\Builder;
+use Dentro\Accounting\Exceptions\StatementNotFoundException;
+use Dentro\Accounting\Ledger\ChartOfAccount\Builder;
 use Illuminate\Support\Arr;
 
 class Report
@@ -60,7 +60,7 @@ class Report
         $debit = 0;
         $credit = 0;
 
-        foreach ($accountByTypes as $key => $value) {
+        foreach ($accountByTypes as $value) {
             foreach ($value as $account) {
                 $debit += $account->getDebit();
                 $credit += $account->getCredit();
@@ -68,8 +68,7 @@ class Report
         }
 
         // unset unnecessary attribute
-        unset($statement['accounts']);
-        unset($statement['cash_only']);
+        unset($statement['accounts'], $statement['cash_only']);
 
         return array_merge($statement, [
             'name' => $statement['name'],

@@ -1,10 +1,9 @@
 <?php
 
-
-namespace DigitalEntropy\Accounting\Entities;
-
+namespace Dentro\Accounting\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GeneralLedger extends Model
 {
@@ -28,9 +27,9 @@ class GeneralLedger extends Model
     /**
      * Define relationship with account Model.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function account(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function account(): BelongsTo
     {
         return $this->belongsTo(config('accounting.models.account'));
     }

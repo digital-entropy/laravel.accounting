@@ -1,7 +1,7 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Exceptions;
+namespace Dentro\Accounting\Exceptions;
 
 
 class InvalidInputException extends InvalidAccountingException

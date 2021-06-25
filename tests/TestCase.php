@@ -1,9 +1,9 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Tests;
+namespace Dentro\Accounting\Tests;
 
-use DigitalEntropy\Accounting\AccountingServiceProvider;
+use Dentro\Accounting\AccountingServiceProvider;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Orchestra\Testbench\Concerns\CreatesApplication;
 

@@ -1,12 +1,12 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Ledger\ChartOfAccount;
+namespace Dentro\Accounting\Ledger\ChartOfAccount;
 
 
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use DigitalEntropy\Accounting\Contracts\Journal\Entry;
+use Dentro\Accounting\Contracts\Journal\Entry;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Collection;
 
@@ -99,7 +99,7 @@ class Builder
      * @param EloquentBuilder $builder
      * @return EloquentBuilder
      */
-    private function queryWithinPeriod(\Illuminate\Database\Eloquent\Builder $builder): EloquentBuilder
+    private function queryWithinPeriod(EloquentBuilder $builder): EloquentBuilder
     {
         $builder->whereDate('date', '<=', $this->period->end);
 
@@ -204,9 +204,9 @@ class Builder
     {
         if (! $this->appendBalance) {
             return $this->query->get()->makeHidden('balance');
-        } else {
-            $this->buildWithBalance();
         }
+
+        $this->buildWithBalance();
 
         return $this->query->get()->filter(fn ($account) => $account->balance > 0);
     }

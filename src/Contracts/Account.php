@@ -1,7 +1,7 @@
 <?php
 
 
-namespace DigitalEntropy\Accounting\Contracts;
+namespace Dentro\Accounting\Contracts;
 
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
