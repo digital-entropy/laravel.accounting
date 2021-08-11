@@ -160,6 +160,8 @@ class Recorder
 
         /** @noinspection PhpUndefinedMethodInspection */
         $journal->load(['entries']);
+        
+        $this->saveEntries($journal);
 
         return $journal;
     }
